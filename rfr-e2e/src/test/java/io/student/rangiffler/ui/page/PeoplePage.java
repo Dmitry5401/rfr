@@ -11,15 +11,21 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 public final class PeoplePage {
   public static final String URL = TestConfig.frontUrl() + "/people";
   private final Page page;
+  private final Locator friends;
   private final Locator allPeople;
+  private final Locator outcomeInvitations;
   private final Locator incomeInvitations;
   private final Locator search;
   private final Locator rows;
 
   public PeoplePage(Page page) {
     this.page = page;
+    this.friends = page.getByRole(AriaRole.TAB,
+        new Page.GetByRoleOptions().setName("Friends").setExact(true));
     this.allPeople = page.getByRole(AriaRole.TAB,
         new Page.GetByRoleOptions().setName("All People").setExact(true));
+    this.outcomeInvitations = page.getByRole(AriaRole.TAB,
+        new Page.GetByRoleOptions().setName("Outcome invitations").setExact(true));
     this.incomeInvitations = page.getByRole(AriaRole.TAB,
         new Page.GetByRoleOptions().setName("Income invitations").setExact(true));
     this.search = page.getByRole(AriaRole.TEXTBOX,
@@ -28,9 +34,21 @@ public final class PeoplePage {
         .filter(new Locator.FilterOptions().setHas(page.getByRole(AriaRole.ROWHEADER)));
   }
 
+  @Step("Открыть вкладку Friends")
+  public PeoplePage clickFriends() {
+    friends.click();
+    return this;
+  }
+
   @Step("Открыть вкладку All People")
   public PeoplePage clickAllPeople() {
     allPeople.click();
+    return this;
+  }
+
+  @Step("Открыть вкладку Outcome invitations")
+  public PeoplePage clickOutcomeInvitations() {
+    outcomeInvitations.click();
     return this;
   }
 
@@ -67,6 +85,18 @@ public final class PeoplePage {
   @Step("Проверить, что приглашение пользователю {username} ждёт ответа")
   public PeoplePage checkThatInvitationSent(String username) {
     assertThat(row(username)).containsText("Waiting...");
+    return this;
+  }
+
+  @Step("Проверить кнопки в строке пользователя {username}: {actions}")
+  public PeoplePage checkThatActionsOf(String username, String... actions) {
+    assertThat(row(username).getByRole(AriaRole.BUTTON)).hasText(actions);
+    return this;
+  }
+
+  @Step("Проверить, что на вкладке нет пользователей")
+  public PeoplePage checkThatNoUsers() {
+    assertThat(page.getByRole(AriaRole.TABPANEL).getByText("There are no users yet")).isVisible();
     return this;
   }
 
