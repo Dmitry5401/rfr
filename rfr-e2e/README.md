@@ -8,6 +8,7 @@ E2E-тесты Rangiffler: JUnit 6.1.3, Playwright Java 1.63 (`@UsePlaywright`),
 ./gradlew :rfr-e2e:installPlaywright                      # один раз: браузер Chromium
 ./gradlew e2e                                             # все UI-тесты (тег ui)
 ./gradlew :rfr-e2e:e2e --tests '*MainPageTest'            # один тест
+./gradlew :rfr-e2e:test                                   # всё без тега ui, стенд не нужен; с --tests тег ui не отсекается (запуск из IDE)
 ./gradlew :rfr-e2e:allureReport                           # rfr-e2e/build/reports/allure-report/allureReport/index.html
 ```
 
