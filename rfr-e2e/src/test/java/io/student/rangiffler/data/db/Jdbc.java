@@ -26,4 +26,10 @@ public final class Jdbc {
       throw new UncheckedIOException("Cannot read SQL resource sql/" + path, error);
     }
   }
+
+  public static void requireOneRow(int updated, String what) {
+    if (updated != 1) {
+      throw new IllegalStateException("Expected one inserted row for " + what + ", got " + updated);
+    }
+  }
 }

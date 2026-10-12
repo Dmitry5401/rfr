@@ -10,14 +10,17 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 public final class MainPage {
   public static final String URL = TestConfig.frontUrl() + "/my-travels";
+  private final Page page;
   private final HeaderComponent header;
   private final Locator travelsMap;
   private final Locator photos;
   private final Locator onlyMine;
   private final Locator withFriends;
   private final Locator addPhoto;
+  private final Locator people;
 
   public MainPage(Page page) {
+    this.page = page;
     this.header = new HeaderComponent(page);
     this.travelsMap = page.getByRole(AriaRole.HEADING,
         new Page.GetByRoleOptions().setName("Travels map").setExact(true));
@@ -29,6 +32,8 @@ public final class MainPage {
         new Page.GetByRoleOptions().setName("With friends").setExact(true));
     this.addPhoto = page.getByRole(AriaRole.BUTTON,
         new Page.GetByRoleOptions().setName("Add photo").setExact(true));
+    this.people = page.getByRole(AriaRole.LINK,
+        new Page.GetByRoleOptions().setName("People").setExact(true));
   }
 
   @Step("Проверить основные элементы главной страницы")
@@ -46,5 +51,11 @@ public final class MainPage {
   @Step("Открыть профиль")
   public ProfilePage clickProfile() {
     return header.clickProfile();
+  }
+
+  @Step("Открыть People")
+  public PeoplePage clickPeople() {
+    people.click();
+    return new PeoplePage(page);
   }
 }
