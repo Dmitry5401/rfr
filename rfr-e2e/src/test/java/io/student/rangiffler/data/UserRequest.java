@@ -1,5 +1,7 @@
 package io.student.rangiffler.data;
 
+import io.student.rangiffler.jupiter.annotation.User;
+
 public record UserRequest(int friends, int incomeInvitations, int outcomeInvitations) {
   public UserRequest {
     if (friends < 0) {
@@ -11,6 +13,10 @@ public record UserRequest(int friends, int incomeInvitations, int outcomeInvitat
     if (outcomeInvitations < 0) {
       throw new IllegalArgumentException("Outcome invitations count must be non-negative, got " + outcomeInvitations);
     }
+  }
+
+  public UserRequest(User user) {
+    this(user.friends(), user.incomeInvitations(), user.outcomeInvitations());
   }
 
   public UserFixture fixture() {
