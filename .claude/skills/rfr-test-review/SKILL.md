@@ -9,14 +9,15 @@ description: Ревью тестового кода rfr-e2e на владени�
 
 ## Правила
 
-1. **Владелец — дерево декораторов.** В Store лежит только корень `UserFixture` из `UserRequest.fixture()`, Store закрывает его как `AutoCloseable`. Каждый декоратор владеет своим `origin` и своими пользователями (`friends`, `inviters`). Поля extension'а, статика и `ThreadLocal` ресурсами не владеют.
+1. **Владелец — дерево декораторов.** В Store лежит только корень `UserFixture` из `UserRequest.fixture()`, Store закрывает его как `AutoCloseable`. Каждый декоратор владеет своим `origin` и своими пользователями (`friends`, `inviters`, `invitees`). Поля extension'а, статика и `ThreadLocal` ресурсами не владеют; исключение — пул `@StaticUser` (правило 9).
 2. **Регистрация до частичной подготовки.** `put` в Store выполняется до `create()`. `create()` не атомарен (`AuthAccount`, `ApiProfile`, друзья, `Friendship`), поэтому `close()` обязан работать после падения на любом шаге: пользователь попадает в список до своего `create()`, а `ApiProfile.delete()` пропускает отсутствующий профиль.
 3. **Симметрия create/close.** Декоратор удаляет ровно то, что создал, в обратном порядке: сначала свои пользователи, потом `origin`. Шаги идут через `TearDown`, чтобы они были независимы, а ошибки не терялись. Строки `friendship` удаляет `ApiProfile.delete()` по id профиля перед самим профилем. Широких `DELETE`/`TRUNCATE` нет.
 4. **Новое предусловие — новый декоратор.** Его добавляют композицией в `UserRequest.fixture()`, а не флагом в `SingleUserFixture` и не веткой в `UserExtension`. Extension знает только `UserRequest` и `UserFixture`.
-5. **Один `@User` — один параметр `TestUser` и один ключ Store с индексом параметра.** Связанные пользователи живут внутри `TestUser` (`friends`, `incomeInvitations`) и дерева фикстур, а не в отдельных параметрах.
+5. **Один `@User` — один параметр `TestUser` и один ключ Store с индексом параметра.** Связанные пользователи живут внутри `TestUser` (`friends`, `incomeInvitations`, `outcomeInvitations`) и дерева фикстур, а не в отдельных параметрах.
 6. **Браузерными ресурсами владеет `@UsePlaywright`.** `Page` и `BrowserContext` не создаются и не закрываются в тестах и extension'ах.
-7. **Слои.** В `jupiter` нет SQL и локаторов. В `data` нет JUnit, SQL живёт только в `data/db`, и `db` не зависит от `data`. В `test` нет локаторов и SQL.
+7. **Слои.** В `jupiter` нет SQL и локаторов. В `data` нет JUnit; из `jupiter` `data` знает только аннотацию `@User` во вторичном конструкторе `UserRequest(User)`. SQL живёт только в `data/db`, и `db` не зависит от `data`. В `test` нет локаторов и SQL.
 8. **Каждый вывод подтверждён.** Опора — проба в `jupiter/probe/UserExtensionTest` (EngineTestKit, `exists()` из `db`, мишени `Observed` и `Failing`) или конкретная строка кода. Без найденной причины изменений не предлагай.
+9. **Пул `@StaticUser` — единственная статика, которая владеет пользователями.** Очередь `StaticUserFixture` одна на JVM и потокобезопасна. Тест берёт пользователя через фикстуру в Store (`put` до `create()`), `close()` возвращает в очередь только взятого и ничего не удаляет из БД, пустая очередь — ожидание с таймаутом и понятная ошибка. Опора — мишени `UsersQueueExtensionTest`.
 
 ## Формат ответа
 
