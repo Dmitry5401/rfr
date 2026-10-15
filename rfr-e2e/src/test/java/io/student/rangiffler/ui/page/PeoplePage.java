@@ -96,7 +96,8 @@ public final class PeoplePage {
 
   @Step("Проверить, что на вкладке нет пользователей")
   public PeoplePage checkThatNoUsers() {
-    assertThat(page.getByRole(AriaRole.TABPANEL).getByText("There are no users yet")).isVisible();
+    assertThat(page.getByRole(AriaRole.TABPANEL).getByText("There are no users yet",
+        new Locator.GetByTextOptions().setExact(true))).isVisible();
     return this;
   }
 
