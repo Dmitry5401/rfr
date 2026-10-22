@@ -16,7 +16,7 @@ rfr/
 │   ├── Реальные контроллеры для пользователей и стран
 │   └── Flyway миграции БД
 ├── rfr-gql-client/        # React + TypeScript Frontend (готов)
-└── rfr-e2e/               # E2E тесты: JUnit 6 + Playwright + Allure 3 (заготовка)
+└── rfr-e2e/               # E2E тесты: JUnit 6 + Playwright + Allure 3
 ```
 
 **Порты:**
@@ -36,40 +36,39 @@ rfr/
 #### 1. Запусти зависимости (БД):
 
 ```bash
-bash localenv.sh
+docker compose up -d --wait
 ```
 
-Скрипт запустит MySQL в Docker контейнере.
+MySQL 8.4.7 поднимается из `compose.yaml` (контейнер `rfr-mysql`, данные в volume `mysql-volume`), команда ждёт статуса `healthy`. `bash localenv.sh` делает то же самое. Остановить: `docker compose stop`, пересоздать данные: `docker compose down -v`.
 
-#### 2. Запусти rfr-auth:
+#### 2. Запусти rfr-auth и rfr-api:
 
 ```bash
-cd rfr-auth
-../gradlew bootRun
+./gradlew runAll
 ```
 
-Или запусти класс с методом main руками. Auth будет доступен на порту 9001: http://localhost:9001
+Задача запускает `bootRun` обоих сервисов параллельно, Ctrl+C останавливает оба. По отдельности: `./gradlew :rfr-auth:bootRun` и `./gradlew :rfr-api:bootRun`, или main class из IDE.
 
-#### 3. Запусти rfr-api:
+Auth доступен на порту 9001: http://localhost:9001, rfr-api — на порту 8081: http://localhost:8081/graphql
 
-```bash
-cd rfr-api
-../gradlew bootRun
-```
-
-rfr-api стартанет на порту 8081: http://localhost:8081/graphql
-
-GraphiQL интерфейс доступен по адресу: http://localhost:8081/graphiql
-
-#### 4. Обнови зависимости и запускай фронт:
+#### 3. Обнови зависимости и запускай фронт:
 
 ```bash
 cd rfr-gql-client
-npm i
+npm ci
 npm run dev
 ```
 
-Фронт стартанет в твоем браузере на порту 3001: http://localhost:3001/
+Фронт стартанет на порту 3001: http://localhost:3001/
+
+#### 4. Прогони E2E-тесты:
+
+```bash
+./gradlew :rfr-e2e:installPlaywright   # один раз: браузер Chromium
+./gradlew e2e
+```
+
+Подробности — `rfr-e2e/README.md`.
 
 #### 5. Проверь работоспособность
 
