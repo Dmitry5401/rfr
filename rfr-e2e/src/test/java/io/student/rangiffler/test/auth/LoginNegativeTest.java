@@ -7,8 +7,10 @@ import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.ui.page.LandingPage;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("ui")
 @UsePlaywright
 @DisplayName("Негативный вход")
 class LoginNegativeTest {

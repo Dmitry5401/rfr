@@ -6,12 +6,14 @@ E2E-тесты Rangiffler: JUnit 6.1.3, Playwright Java 1.63 (`@UsePlaywright`),
 
 ```bash
 ./gradlew :rfr-e2e:installPlaywright                      # один раз: браузер Chromium
-./gradlew :rfr-e2e:test --tests '*RegistrationTest' --rerun-tasks
-./gradlew :rfr-e2e:test --tests '*MainPageTest' --rerun-tasks
+./gradlew e2e                                             # все UI-тесты (тег ui)
+./gradlew :rfr-e2e:e2e --tests '*MainPageTest'            # один тест
 ./gradlew :rfr-e2e:allureReport                           # rfr-e2e/build/reports/allure-report/allureReport/index.html
 ```
 
 Стенд: MySQL `:3306`, `rfr-auth :9001`, `rfr-api :8081`, фронт `:3001` (см. корневой README).
+
+Тесты, которым нужен браузер и стенд, помечены `@Tag("ui")` и запускаются задачей `e2e`. Задача `test` исключает тег `ui` и обходится без стенда. Обе задачи запускают тесты при каждом вызове, `--rerun-tasks` не нужен.
 
 ## Конфигурация
 
