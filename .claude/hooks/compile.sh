@@ -6,7 +6,7 @@ case "$rel" in
   rfr-auth/*.java) label=rfr-auth; cmd=(./gradlew -q :rfr-auth:compileJava) ;;
   rfr-api/*.java) label=rfr-api; cmd=(./gradlew -q :rfr-api:compileJava) ;;
   rfr-e2e/*.java) label=rfr-e2e; cmd=(./gradlew -q :rfr-e2e:compileTestJava) ;;
-  rfr-gql-client/src/*.ts|rfr-gql-client/src/*.tsx) label=rfr-gql-client; cmd=(npx --prefix rfr-gql-client tsc --noEmit -p rfr-gql-client) ;;
+  rfr-gql-client/src/*.ts|rfr-gql-client/src/*.tsx) label="rfr-gql-client (tsc, eslint)"; cmd=(bash -c 'cd rfr-gql-client && npx tsc --noEmit -p . && npx eslint --max-warnings 0 "$1"' _ "${rel#rfr-gql-client/}") ;;
   *) exit 0 ;;
 esac
 cd "$root" || exit 0
