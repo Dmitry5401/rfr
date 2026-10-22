@@ -19,7 +19,18 @@
     ],
     "deny": [
       "Bash(git push *)",
-      "Bash(rm *)"
+      "Bash(git -C * push *)",
+      "Bash(git -c * push *)",
+      "Bash(git rm *)",
+      "Bash(git clean *)",
+      "Bash(rm *)",
+      "Bash(command rm *)",
+      "Bash(/bin/rm *)",
+      "Bash(rmdir *)",
+      "Bash(unlink *)",
+      "Bash(find * -delete*)",
+      "Bash(find * -exec rm *)",
+      "Bash(xargs rm *)"
     ]
   },
   "enabledMcpjsonServers": [
