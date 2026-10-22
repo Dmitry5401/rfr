@@ -1,14 +1,4 @@
-## Назначение
-
-GraphQL API (`POST http://localhost:8081/graphql`), OAuth 2.0 Resource Server. Подробности — `rfr-api/README.md`.
-
-## Запуск
-
-```bash
-./gradlew :rfr-api:bootRun
-```
-
-Нужен запущенный `rfr-auth`: API проверяет JWT по его JWKS.
+Подробности — `rfr-api/README.md`. Нужен запущенный `rfr-auth`: API проверяет JWT по его JWKS.
 
 ## Что настоящее, а что мок
 
@@ -23,10 +13,9 @@ GraphQL API (`POST http://localhost:8081/graphql`), OAuth 2.0 Resource Server. �
 
 ## Что важно знать
 
-- Схема — `src/main/resources/graphql/query.graphqls`. Java-модель генерирует DGS Codegen (`./gradlew :rfr-api:generateJava`) в `build/generated/sources/dgs-codegen`, руками её не пишут.
+- Java-модель генерирует DGS Codegen из `src/main/resources/graphql/query.graphqls`, руками её не пишут.
 - Профиль создаётся при первом `Query.user` со страной `ru`.
 - Пользователи `rangiffler-api` и `rangiffler-auth` связаны только по username, UUID у них разные.
-- Ошибки приходят с HTTP 200 в `errors`; тип — в `extensions.classification` (`BAD_REQUEST`, `NOT_FOUND`, `UNAUTHORIZED`, `FORBIDDEN`).
-- Query требуют authority `read`, mutation — `write`. Принимается только access token, `id_token` отклоняется с 401.
-- Дружба — одна строка на пару в `friendship`. `ADD` создаёт `PENDING`, `ACCEPT` и `REJECT` доступны только адресату, `DELETE` — любой стороне.
+- Ошибки приходят с HTTP 200 в `errors`; тип — в `extensions.classification`.
+- Принимается только access token, `id_token` отклоняется с 401.
 - Внешних ключей с каскадным удалением нет: перед удалением пользователя удаляются его строки в `friendship`.

@@ -15,6 +15,6 @@ MySQL — порт 3306, пользователь `root`, пароль `secret`.
 
 ## Окружение
 
-- Поднимай MySQL (`docker compose up -d`), сервисы (`./gradlew runAll` — `rfr-auth` и `rfr-api` параллельно) и фронт.
+- Поднимай MySQL (`docker compose up -d --wait`), сервисы (`./gradlew runAll` — `rfr-auth` и `rfr-api` параллельно) и фронт.
 - E2E-тесты: `./gradlew e2e` — тесты `rfr-e2e` с тегом `ui` против поднятого стенда; Gradle запускает их при каждом вызове.
 - Нужны JDK 25, Node 22+, Docker.
