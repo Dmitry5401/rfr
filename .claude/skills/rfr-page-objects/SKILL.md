@@ -27,3 +27,15 @@ description: Создаёт и меняет Page Objects и компоненты
 
 Прогон `./gradlew :rfr-e2e:test --tests '<Тест>' --rerun-tasks` — единственное подтверждение. Проход сценария через MCP запуском теста не считается.
 В отчёте разделяй: что подтверждено в браузере через MCP, что взято из исходников.
+
+## Практика занятия 01
+
+### MUI Select: combobox, затем option с page
+Поле вроде Location — MUI Select с ролью combobox. Действие выбора страны:
+- клик по `page.getByRole(AriaRole.COMBOBOX, … setName("Location"))`;
+- клик по `page.getByRole(AriaRole.OPTION, … setName(country).setExact(true))`.
+
+Список опций рисуется отдельным оверлеем, поэтому локатор `option` берётся у `page`, а не у локатора закрытого combobox. В тест передаётся одно и то же название страны. Проверка читает текст combobox после выбора.
+
+### Ожидание ответа мутации — внутри действия
+`clickSave()` кликает Save внутри `page.waitForResponse(...)`: URL содержит `/graphql`, тело запроса содержит `UpdateUser`, ответ успешный. Тест вызывает `clickSave()` и сразу `checkThat...`. В тесте нет своего `waitForResponse` и нет `waitForTimeout`. Аватар после сохранения — `img`, у которого `src` начинается с `data:image/`.
