@@ -28,18 +28,27 @@ public final class Migrations {
       throw new IllegalStateException(
           "Migrations directory " + location.toAbsolutePath() + " of schema " + database.schema() + " does not exist");
     }
-    ValidateResult result = Flyway.configure()
+    ValidateResult result = flyway().validateWithResult();
+    return result.validationSuccessful
+        ? Optional.empty()
+        : Optional.of(database.schema() + ": " + String.join("; ", problems(result)));
+  }
+
+  public String version() {
+    return Optional.ofNullable(flyway().info().current())
+        .map(migration -> migration.getVersion().getVersion())
+        .orElse("none");
+  }
+
+  private Flyway flyway() {
+    return Flyway.configure()
         .dataSource(database.dataSource())
         .schemas(database.schema())
         .locations("filesystem:" + location.toAbsolutePath())
         .baselineOnMigrate(true)
         .baselineVersion("0")
         .ignoreMigrationPatterns(new ValidatePattern[0])
-        .load()
-        .validateWithResult();
-    return result.validationSuccessful
-        ? Optional.empty()
-        : Optional.of(database.schema() + ": " + String.join("; ", problems(result)));
+        .load();
   }
 
   private List<String> problems(ValidateResult result) {

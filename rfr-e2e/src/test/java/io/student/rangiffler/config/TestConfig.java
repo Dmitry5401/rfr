@@ -44,6 +44,10 @@ public final class TestConfig {
     return Duration.ofSeconds(Long.parseLong(value("standTimeout", "180")));
   }
 
+  public static String commit() {
+    return value("commit", "unknown");
+  }
+
   public static boolean migrationCheck() {
     return Boolean.parseBoolean(value("migrationCheck", "false"));
   }
