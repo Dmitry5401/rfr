@@ -1,5 +1,6 @@
 package io.student.rangiffler.data.db;
 
+import io.student.rangiffler.config.TestConfig;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -14,8 +15,8 @@ public final class Migrations {
   private final Databases database;
   private final Path location;
 
-  public Migrations(Databases database, String location) {
-    this(database, Path.of(location));
+  public Migrations(Databases database) {
+    this(database, TestConfig.migrations(database.schema()));
   }
 
   public Migrations(Databases database, Path location) {

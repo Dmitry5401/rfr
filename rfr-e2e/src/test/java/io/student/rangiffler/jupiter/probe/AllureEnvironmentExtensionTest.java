@@ -1,13 +1,16 @@
 package io.student.rangiffler.jupiter.probe;
 
+import io.student.rangiffler.data.db.Databases;
 import io.student.rangiffler.jupiter.annotation.ProbeTarget;
 import io.student.rangiffler.jupiter.condition.ProbeTargetCondition;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -33,7 +36,10 @@ class AllureEnvironmentExtensionTest {
         .map(line -> line.substring(0, line.indexOf('=')))
         .collect(Collectors.toSet());
     assertEquals(
-        Set.of("frontUrl", "authUrl", "apiUrl", "browser", "headless", "commit", "rangiffler-auth", "rangiffler-api"),
+        Stream.concat(
+                Stream.of("frontUrl", "authUrl", "apiUrl", "browser", "headless", "commit"),
+                Arrays.stream(Databases.values()).map(Databases::schema))
+            .collect(Collectors.toSet()),
         keys,
         "Allure environment does not hold exactly the expected keys");
   }

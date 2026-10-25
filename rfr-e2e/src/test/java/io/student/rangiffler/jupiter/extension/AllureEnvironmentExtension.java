@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -21,8 +22,7 @@ public final class AllureEnvironmentExtension implements SuiteExtension {
     environment.put("browser", TestConfig.browser());
     environment.put("headless", String.valueOf(TestConfig.headless()));
     environment.put("commit", TestConfig.commit());
-    environment.put(Databases.AUTH.schema(), version(new Migrations(Databases.AUTH, TestConfig.authMigrations())));
-    environment.put(Databases.API.schema(), version(new Migrations(Databases.API, TestConfig.apiMigrations())));
+    Arrays.stream(Databases.values()).forEach(database -> environment.put(database.schema(), version(new Migrations(database))));
     Path directory = Path.of(context.getConfigurationParameter("allure.results.directory").orElse("build/allure-results"));
     try {
       Files.createDirectories(directory);

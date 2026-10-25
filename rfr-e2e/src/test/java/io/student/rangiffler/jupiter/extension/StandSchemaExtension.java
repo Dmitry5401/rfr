@@ -3,18 +3,17 @@ package io.student.rangiffler.jupiter.extension;
 import io.student.rangiffler.config.TestConfig;
 import io.student.rangiffler.data.db.Databases;
 import io.student.rangiffler.data.db.Migrations;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 public final class StandSchemaExtension implements SuiteExtension {
   @Override
   public void beforeSuite(ExtensionContext context) {
     if (TestConfig.migrationCheck()) {
-      List<String> mismatches = Stream.of(
-              new Migrations(Databases.AUTH, TestConfig.authMigrations()),
-              new Migrations(Databases.API, TestConfig.apiMigrations()))
+      List<String> mismatches = Arrays.stream(Databases.values())
+          .map(Migrations::new)
           .map(Migrations::mismatch)
           .flatMap(Optional::stream)
           .toList();

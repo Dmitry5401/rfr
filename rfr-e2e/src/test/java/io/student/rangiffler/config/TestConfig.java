@@ -1,6 +1,7 @@
 package io.student.rangiffler.config;
 
 import java.net.URI;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Locale;
 
@@ -52,12 +53,11 @@ public final class TestConfig {
     return Boolean.parseBoolean(value("migrationCheck", "false"));
   }
 
-  public static String authMigrations() {
-    return value("authMigrations", "../rfr-auth/src/main/resources/db/migration/rangiffler-auth");
-  }
-
-  public static String apiMigrations() {
-    return value("apiMigrations", "../rfr-api/src/main/resources/db/migration/rangiffler-api");
+  public static Path migrations(String schema) {
+    return Path.of(value("projectDir", ".."))
+        .resolve("rfr-" + schema.substring("rangiffler-".length()))
+        .resolve("src/main/resources/db/migration")
+        .resolve(schema);
   }
 
   public static String browser() {
