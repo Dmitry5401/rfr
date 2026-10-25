@@ -103,7 +103,7 @@ Skill — это папка с файлом `SKILL.md`: YAML-заголовок 
 
 1. **`ui/page/ProfilePage` целиком**: First Name, Surname, Location, аватар (`setInputFiles`), Save, Reset. Подсказки:
    - Location — MUI `Select`, то есть `combobox` с именем `Location`. Option ищите по флагу — `getByRole(OPTION)` с фильтром по `IMG` с точным именем страны: имя самого option выглядит как «France France».
-   - `clickSave()` должен дождаться ответа GraphQL-операции `UpdateUser` через `page.waitForResponse(..., save::click)`, иначе `reload()` обгонит мутацию (почему — на занятии 6).
+   - `clickSave()` должен дождаться ответа GraphQL-операции `UpdateUser` через `page.waitForResponse(..., save::click)`, иначе `reload()` обгонит мутацию (почему — на занятии 7).
    - Аватар после сохранения — `img` в `main` с `src` вида `data:image/...`.
 2. **`test/profile/ProfileTest`** на пользователе из `@User`: сохранение каждого поля и чтение после reload, Reset возвращает сохранённые значения, смена страны (страна выбирается детерминированно, без случайности).
 3. **`test/auth/LoginNegativeTest`**: неверный пароль и несуществующий пользователь — в обоих случаях `Bad credentials` (Spring Security скрывает `UsernameNotFoundException`). Локатор ошибки — `.form__error` шаблона `rfr-auth`: у `<p>` нет роли.
