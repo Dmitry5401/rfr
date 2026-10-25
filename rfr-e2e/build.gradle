@@ -84,7 +84,6 @@ tasks.register('e2e', Test) {
     useJUnitPlatform {
         includeTags 'ui'
     }
-    dependsOn waitForStand
 }
 
 tasks.register('installPlaywright', JavaExec) {
