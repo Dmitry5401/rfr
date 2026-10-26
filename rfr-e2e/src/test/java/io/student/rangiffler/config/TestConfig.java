@@ -76,6 +76,14 @@ public final class TestConfig {
     return Integer.parseInt(value("viewportHeight", "1080"));
   }
 
+  public static Duration actionTimeout() {
+    return Duration.ofSeconds(Long.parseLong(value("actionTimeout", "5")));
+  }
+
+  public static Duration navigationTimeout() {
+    return Duration.ofSeconds(Long.parseLong(value("navigationTimeout", "30")));
+  }
+
   static String value(String key, String fallback) {
     String property = System.getProperty("rfr." + key);
     if (property != null && !property.isBlank()) {
