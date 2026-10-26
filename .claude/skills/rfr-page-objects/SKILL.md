@@ -16,17 +16,18 @@ description: Создаёт и меняет Page Objects и компоненты
 4. Каждый публичный метод страницы и компонента — с `@Step`, и каждый параметр попадает в текст шага: `@Step("Заполнить форму входа: {username} / {password}")`.
 5. Переход возвращает объект следующей страницы, действие и проверка на текущей — `this`.
 6. Одно бизнес-действие — один метод, имя которого называет форму: `fillLoginForm(username, password)`, `fillRegistrationForm(...)`. Без безликих `fillForm`/`fill`/`submit` и цепочек `fillUsername().fillPassword()`; отдельный метод на поле — только если тесту нужно именно поле (валидация).
-7. Действие отдельно от проверки: `fill…`/`click…` ничего не проверяют; `checkThat…` только проверяют через `PlaywrightAssertions.assertThat(locator)` и ничего не кликают. Без `locator.isVisible()` в JUnit-проверках и ручных ожиданий.
-8. Без `checkThatOpened`, `checkPageLoaded`, `isLoaded`, `waitUntilLoaded`: `click`/`fill` ждут элемент, web-first assertions ждут состояние. URL и видимость страницы проверяем, только когда переход и есть предмет теста.
-9. Локаторы: `getByRole` с точным `name`, `getByLabel`, `getByPlaceholder`, `getByText` с точным совпадением, `getByTestId`. Без `first()`/`nth()`, MUI-классов и XPath; неуникальный элемент сужай родителем: `page.getByRole(AriaRole.BANNER).getByRole(…)`.
-10. Проверка не должна быть тавтологией локатора: `assertThat(heading("Travels map")).hasText("Travels map")` ничего не доказывает. Ожидаемое значение приходит из теста (`checkThatUsername(username)`).
-11. Вход только через UI; `access_token`/`id_token` в `localStorage` не подставлять (до занятия 14).
-12. Без комментариев и Javadoc: смысл передают имена методов и текст `@Step`.
+7. Действие отдельно от проверки: `fill…`/`click…` ничего не проверяют; `checkThat…` только проверяют через `PlaywrightAssertions.assertThat(locator)` и ничего не кликают.
+8. Проверки — только web-first assertions Playwright: `PlaywrightAssertions.assertThat(locator | page | response)`. Запрещены любые другие ассерты: JUnit `Assertions`, AssertJ, Hamcrest, `assert`, ручные `if … throw`, а также проверки по снимку состояния (`isVisible()`, `textContent()`, `count()`, `page.url()`) и ручные ожидания (`waitForTimeout`, `waitForSelector`). Они не ретраят и проверяют состояние в один момент.
+9. Без `checkThatOpened`, `checkPageLoaded`, `isLoaded`, `waitUntilLoaded`: `click`/`fill` ждут элемент, web-first assertions ждут состояние. URL и видимость страницы проверяем, только когда переход и есть предмет теста.
+10. Локаторы: `getByRole` с точным `name`, `getByLabel`, `getByPlaceholder`, `getByText` с точным совпадением, `getByTestId`. Без `first()`/`nth()`, MUI-классов и XPath; неуникальный элемент сужай родителем: `page.getByRole(AriaRole.BANNER).getByRole(…)`.
+11. Проверка не должна быть тавтологией локатора: `assertThat(heading("Travels map")).hasText("Travels map")` ничего не доказывает. Ожидаемое значение приходит из теста (`checkThatUsername(username)`).
+12. Вход только через UI; `access_token`/`id_token` в `localStorage` не подставлять (до занятия 14).
+13. Без комментариев и Javadoc: смысл передают имена методов и текст `@Step`.
 
 ## Из практики ДЗ 1
 
-13. Oracle сохранения — повторное чтение после `reload()`, а не snackbar: snackbar подтверждает ответ API, а не то, что значение записано. Чтобы `reload()` не обогнал мутацию, действие Save ждёт ответ своей GraphQL-операции (`page.waitForResponse(…, save::click)`), а не видимость snackbar.
-14. Выпадающий список — по ролям: открыть `combobox` по имени поля, затем `option`. Если доступное имя option дублирует текст (флаг с alt + название), уточняй option вложенным элементом с точным именем (`filter(has: img с alt = страна)`), а не `nth`.
+14. Oracle сохранения — повторное чтение после `reload()`, а не snackbar: snackbar подтверждает ответ API, а не то, что значение записано. Чтобы `reload()` не обогнал мутацию, действие Save ждёт ответ своей GraphQL-операции (`page.waitForResponse(…, save::click)`), а не видимость snackbar.
+15. Выпадающий список — по ролям: открыть `combobox` по имени поля, затем `option`. Если доступное имя option дублирует текст (флаг с alt + название), уточняй option вложенным элементом с точным именем (`filter(has: img с alt = страна)`), а не `nth`.
 
 ## Проверка результата
 
