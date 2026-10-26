@@ -1,18 +1,16 @@
 package io.student.rangiffler.test.people;
 
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.junit.UsePlaywright;
 import io.student.rangiffler.data.TestUser;
+import io.student.rangiffler.jupiter.annotation.UiTest;
 import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.ui.page.LandingPage;
 import io.student.rangiffler.ui.page.PeoplePage;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-@Tag("ui")
-@UsePlaywright
+@UiTest
 @DisplayName("Предусловия дружбы")
 class FriendshipPreconditionTest {
   @Test

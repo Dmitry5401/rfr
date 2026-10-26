@@ -68,6 +68,14 @@ public final class TestConfig {
     return Boolean.parseBoolean(value("headless", "true"));
   }
 
+  public static int viewportWidth() {
+    return Integer.parseInt(value("viewportWidth", "1920"));
+  }
+
+  public static int viewportHeight() {
+    return Integer.parseInt(value("viewportHeight", "1080"));
+  }
+
   static String value(String key, String fallback) {
     String property = System.getProperty("rfr." + key);
     if (property != null && !property.isBlank()) {
