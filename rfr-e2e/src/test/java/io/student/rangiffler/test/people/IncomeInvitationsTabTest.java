@@ -17,6 +17,7 @@ class IncomeInvitationsTabTest {
                          @User(friends = 1, incomeInvitations = 1, outcomeInvitations = 1) TestUser user) {
     PeopleLogin.open(page, user)
         .clickIncomeInvitations()
+        .table()
         .checkThatPeople(List.of(user.incomeInvitations().getFirst().username()));
   }
 
@@ -25,7 +26,9 @@ class IncomeInvitationsTabTest {
   void invitationOffersAcceptAndDecline(Page page, @User(incomeInvitations = 1) TestUser user) {
     PeopleLogin.open(page, user)
         .clickIncomeInvitations()
-        .checkThatActionsOf(user.incomeInvitations().getFirst().username(), "Accept", "Decline");
+        .table()
+        .row(user.incomeInvitations().getFirst().username())
+        .checkThatActions("Accept", "Decline");
   }
 
   @Test
@@ -33,6 +36,7 @@ class IncomeInvitationsTabTest {
   void showsEmptyStateWithoutInvitations(Page page, @User TestUser user) {
     PeopleLogin.open(page, user)
         .clickIncomeInvitations()
+        .table()
         .checkThatNoUsers();
   }
 }

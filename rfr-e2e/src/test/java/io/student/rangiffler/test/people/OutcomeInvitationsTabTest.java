@@ -17,17 +17,19 @@ class OutcomeInvitationsTabTest {
                          @User(friends = 1, incomeInvitations = 1, outcomeInvitations = 1) TestUser user) {
     PeopleLogin.open(page, user)
         .clickOutcomeInvitations()
+        .table()
         .checkThatPeople(List.of(user.outcomeInvitations().getFirst().username()));
   }
 
   @Test
   @DisplayName("У исходящего приглашения статус Waiting и кнопка Cancel")
   void invitationIsWaitingAndCancellable(Page page, @User(outcomeInvitations = 1) TestUser user) {
-    String invitee = user.outcomeInvitations().getFirst().username();
     PeopleLogin.open(page, user)
         .clickOutcomeInvitations()
-        .checkThatInvitationSent(invitee)
-        .checkThatActionsOf(invitee, "Cancel");
+        .table()
+        .row(user.outcomeInvitations().getFirst().username())
+        .checkThatInvitationSent()
+        .checkThatActions("Cancel");
   }
 
   @Test
@@ -35,6 +37,7 @@ class OutcomeInvitationsTabTest {
   void showsEmptyStateWithoutInvitations(Page page, @User TestUser user) {
     PeopleLogin.open(page, user)
         .clickOutcomeInvitations()
+        .table()
         .checkThatNoUsers();
   }
 }

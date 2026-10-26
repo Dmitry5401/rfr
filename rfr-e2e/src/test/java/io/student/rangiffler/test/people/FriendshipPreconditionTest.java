@@ -16,7 +16,9 @@ class FriendshipPreconditionTest {
   @Test
   @DisplayName("Пользователь с двумя друзьями видит их на вкладке Friends")
   void friendsPreconditionIsVisible(Page page, @User(friends = 2) TestUser user) {
-    people(page, user).checkThatPeople(usernames(user.friends()));
+    people(page, user)
+        .table()
+        .checkThatPeople(usernames(user.friends()));
   }
 
   @Test
@@ -24,15 +26,17 @@ class FriendshipPreconditionTest {
   void incomeInvitationPreconditionIsVisible(Page page, @User(incomeInvitations = 1) TestUser user) {
     people(page, user)
         .clickIncomeInvitations()
+        .table()
         .checkThatPeople(usernames(user.incomeInvitations()));
   }
 
   @Test
   @DisplayName("Друзья и заявки создаются вместе цепочкой декораторов")
   void chainedPreconditionsAreVisible(Page page, @User(friends = 2, incomeInvitations = 3) TestUser user) {
-    people(page, user)
-        .checkThatPeople(usernames(user.friends()))
-        .clickIncomeInvitations()
+    PeoplePage people = people(page, user);
+    people.table().checkThatPeople(usernames(user.friends()));
+    people.clickIncomeInvitations()
+        .table()
         .checkThatPeople(usernames(user.incomeInvitations()));
   }
 

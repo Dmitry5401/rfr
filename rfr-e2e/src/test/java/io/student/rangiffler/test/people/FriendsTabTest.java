@@ -16,6 +16,7 @@ class FriendsTabTest {
   void listsOnlyFriends(Page page,
                         @User(friends = 1, incomeInvitations = 1, outcomeInvitations = 1) TestUser user) {
     PeopleLogin.open(page, user)
+        .table()
         .checkThatPeople(List.of(user.friends().getFirst().username()));
   }
 
@@ -23,13 +24,16 @@ class FriendsTabTest {
   @DisplayName("У друга единственная кнопка Remove")
   void friendOffersOnlyRemove(Page page, @User(friends = 1) TestUser user) {
     PeopleLogin.open(page, user)
-        .checkThatActionsOf(user.friends().getFirst().username(), "Remove");
+        .table()
+        .row(user.friends().getFirst().username())
+        .checkThatActions("Remove");
   }
 
   @Test
   @DisplayName("Без друзей показывает пустое состояние")
   void showsEmptyStateWithoutFriends(Page page, @User TestUser user) {
     PeopleLogin.open(page, user)
+        .table()
         .checkThatNoUsers();
   }
 }
