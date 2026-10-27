@@ -4,6 +4,7 @@ import com.microsoft.playwright.Page;
 import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.jupiter.annotation.UiTest;
 import io.student.rangiffler.jupiter.annotation.User;
+import io.student.rangiffler.ui.page.PeopleTab;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ class OutcomeInvitationsTabTest {
   void listsOnlyInvitees(Page page,
                          @User(friends = 1, incomeInvitations = 1, outcomeInvitations = 1) TestUser user) {
     PeopleLogin.open(page, user)
-        .clickOutcomeInvitations()
+        .openTab(PeopleTab.OUTCOME_INVITATIONS)
         .table()
         .checkThatPeople(List.of(user.outcomeInvitations().getFirst().username()));
   }
@@ -25,10 +26,10 @@ class OutcomeInvitationsTabTest {
   @DisplayName("У исходящего приглашения статус Waiting и кнопка Cancel")
   void invitationIsWaitingAndCancellable(Page page, @User(outcomeInvitations = 1) TestUser user) {
     PeopleLogin.open(page, user)
-        .clickOutcomeInvitations()
+        .openTab(PeopleTab.OUTCOME_INVITATIONS)
         .table()
         .row(user.outcomeInvitations().getFirst().username())
-        .checkThatInvitationSent()
+        .checkThatWaiting()
         .checkThatActions("Cancel");
   }
 
@@ -36,8 +37,8 @@ class OutcomeInvitationsTabTest {
   @DisplayName("Без исходящих приглашений показывает пустое состояние")
   void showsEmptyStateWithoutInvitations(Page page, @User TestUser user) {
     PeopleLogin.open(page, user)
-        .clickOutcomeInvitations()
+        .openTab(PeopleTab.OUTCOME_INVITATIONS)
         .table()
-        .checkThatNoUsers();
+        .checkThatEmpty();
   }
 }

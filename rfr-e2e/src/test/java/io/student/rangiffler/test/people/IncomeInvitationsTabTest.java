@@ -4,6 +4,7 @@ import com.microsoft.playwright.Page;
 import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.jupiter.annotation.UiTest;
 import io.student.rangiffler.jupiter.annotation.User;
+import io.student.rangiffler.ui.page.PeopleTab;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ class IncomeInvitationsTabTest {
   void listsOnlyInviters(Page page,
                          @User(friends = 1, incomeInvitations = 1, outcomeInvitations = 1) TestUser user) {
     PeopleLogin.open(page, user)
-        .clickIncomeInvitations()
+        .openTab(PeopleTab.INCOME_INVITATIONS)
         .table()
         .checkThatPeople(List.of(user.incomeInvitations().getFirst().username()));
   }
@@ -25,7 +26,7 @@ class IncomeInvitationsTabTest {
   @DisplayName("У приглашения кнопки Accept и Decline")
   void invitationOffersAcceptAndDecline(Page page, @User(incomeInvitations = 1) TestUser user) {
     PeopleLogin.open(page, user)
-        .clickIncomeInvitations()
+        .openTab(PeopleTab.INCOME_INVITATIONS)
         .table()
         .row(user.incomeInvitations().getFirst().username())
         .checkThatActions("Accept", "Decline");
@@ -35,8 +36,8 @@ class IncomeInvitationsTabTest {
   @DisplayName("Без входящих приглашений показывает пустое состояние")
   void showsEmptyStateWithoutInvitations(Page page, @User TestUser user) {
     PeopleLogin.open(page, user)
-        .clickIncomeInvitations()
+        .openTab(PeopleTab.INCOME_INVITATIONS)
         .table()
-        .checkThatNoUsers();
+        .checkThatEmpty();
   }
 }

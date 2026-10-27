@@ -34,6 +34,6 @@ class FriendsTabTest {
   void showsEmptyStateWithoutFriends(Page page, @User TestUser user) {
     PeopleLogin.open(page, user)
         .table()
-        .checkThatNoUsers();
+        .checkThatEmpty();
   }
 }

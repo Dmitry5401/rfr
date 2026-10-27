@@ -25,7 +25,7 @@ public final class PeopleRow {
   }
 
   @Step("Проверить, что приглашение пользователю {this.username} ждёт ответа")
-  public PeopleRow checkThatInvitationSent() {
+  public PeopleRow checkThatWaiting() {
     assertThat(row).containsText("Waiting...");
     return this;
   }

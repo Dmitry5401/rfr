@@ -5,6 +5,7 @@ import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.jupiter.annotation.UiTest;
 import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.ui.page.LandingPage;
+import io.student.rangiffler.ui.page.PeopleTab;
 import io.student.rangiffler.ui.page.PeoplePage;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +26,7 @@ class FriendshipPreconditionTest {
   @DisplayName("Пользователь с одной заявкой видит её на вкладке Income invitations")
   void incomeInvitationPreconditionIsVisible(Page page, @User(incomeInvitations = 1) TestUser user) {
     people(page, user)
-        .clickIncomeInvitations()
+        .openTab(PeopleTab.INCOME_INVITATIONS)
         .table()
         .checkThatPeople(usernames(user.incomeInvitations()));
   }
@@ -35,7 +36,7 @@ class FriendshipPreconditionTest {
   void chainedPreconditionsAreVisible(Page page, @User(friends = 2, incomeInvitations = 3) TestUser user) {
     PeoplePage people = people(page, user);
     people.table().checkThatPeople(usernames(user.friends()));
-    people.clickIncomeInvitations()
+    people.openTab(PeopleTab.INCOME_INVITATIONS)
         .table()
         .checkThatPeople(usernames(user.incomeInvitations()));
   }

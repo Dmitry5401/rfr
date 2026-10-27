@@ -15,8 +15,7 @@ public final class PeopleTable {
   public PeopleTable(Page page) {
     this.page = page;
     this.panel = page.getByRole(AriaRole.TABPANEL);
-    this.rows = panel.getByRole(AriaRole.TABLE).getByRole(AriaRole.ROW)
-        .filter(new Locator.FilterOptions().setHas(page.getByRole(AriaRole.ROWHEADER)));
+    this.rows = panel.getByTestId("people-row");
   }
 
   public PeopleRow row(String username) {
@@ -31,7 +30,7 @@ public final class PeopleTable {
   }
 
   @Step("Проверить, что на вкладке нет пользователей")
-  public PeopleTable checkThatNoUsers() {
+  public PeopleTable checkThatEmpty() {
     assertThat(panel.getByText("There are no users yet",
         new Locator.GetByTextOptions().setExact(true))).isVisible();
     return this;
