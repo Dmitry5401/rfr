@@ -9,6 +9,7 @@ public final class BrowserOptions implements OptionsFactory {
   @Override
   public Options getOptions() {
     return new Options()
+        .setBrowserName(TestConfig.browser())
         .setHeadless(TestConfig.headless())
         .setContextOptions(contextOptions())
         .setTestIdAttribute("data-test-id");

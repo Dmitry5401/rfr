@@ -64,7 +64,7 @@ npm run dev
 #### 4. Прогони E2E-тесты:
 
 ```bash
-./gradlew :rfr-e2e:installPlaywright   # один раз: браузер Chromium
+./gradlew :rfr-e2e:installPlaywright   # один раз: браузер из `rfr.browser`, по умолчанию Chromium
 ./gradlew e2e
 ```
 
