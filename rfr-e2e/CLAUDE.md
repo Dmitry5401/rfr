@@ -2,7 +2,7 @@
 
 - Структура пакетов — `rfr-e2e/README.md`, раздел «Архитектура». Новые классы кладутся в существующие пакеты; класс, который не подходит под описание пакета в README, туда не кладётся — сначала спроси, куда.
 - `config` — только `TestConfig`, без сети, SQL и ожиданий. Готовность и схема стенда — в `stand`.
-- `jupiter` — только связка с JUnit: расширение собирает объекты из `config`, `stand`, `data` и вызывает их, без сокетов, HTTP, SQL и локаторов.
+- `jupiter` — только связка с JUnit и Playwright JUnit: расширение собирает объекты из `config`, `stand`, `data` и вызывает их, без сокетов, HTTP, SQL и локаторов.
 - В `utils` и новые пакеты-свалки (`helpers`, `common`) классы не добавляются.
 - Page Objects и компоненты — по skill `rfr-page-objects` (`.claude/skills/rfr-page-objects/SKILL.md`).
 - Без комментариев и Javadoc в коде `rfr-e2e` (Java, Gradle, SQL, properties): смысл передают имена и `@Step`.
