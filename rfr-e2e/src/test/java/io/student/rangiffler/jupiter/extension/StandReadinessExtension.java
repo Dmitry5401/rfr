@@ -1,9 +1,9 @@
 package io.student.rangiffler.jupiter.extension;
 
-import io.student.rangiffler.config.HttpService;
-import io.student.rangiffler.config.Stand;
-import io.student.rangiffler.config.TcpService;
 import io.student.rangiffler.config.TestConfig;
+import io.student.rangiffler.stand.HttpService;
+import io.student.rangiffler.stand.Stand;
+import io.student.rangiffler.stand.TcpService;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.time.Duration;

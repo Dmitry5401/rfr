@@ -1,11 +1,11 @@
 package io.student.rangiffler.jupiter.probe;
 
 import com.sun.net.httpserver.HttpServer;
-import io.student.rangiffler.config.HttpService;
-import io.student.rangiffler.config.Stand;
 import io.student.rangiffler.jupiter.annotation.ProbeTarget;
 import io.student.rangiffler.jupiter.condition.ProbeTargetCondition;
 import io.student.rangiffler.jupiter.extension.StandReadinessExtension;
+import io.student.rangiffler.stand.HttpService;
+import io.student.rangiffler.stand.Stand;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.InetAddress;

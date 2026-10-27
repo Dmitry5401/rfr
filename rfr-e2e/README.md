@@ -39,14 +39,25 @@ E2E-тесты Rangiffler: JUnit 6.1.3, Playwright Java 1.63 (`@UsePlaywright`),
 
 | Пакет | Что лежит |
 |---|---|
-| `config` | `TestConfig` — единственная точка чтения настроек; `Stand` ждёт, пока ответят все `Service` стенда (`TcpService`, `HttpService`) |
+| `config` | только `TestConfig` — единственная точка чтения настроек |
+| `stand` | внешний стенд как объект: `Stand` ждёт, пока ответят все `Service` стенда (`TcpService`, `HttpService`); `Migrations` сверяет схему БД с миграциями бэкенда через Flyway validate и отдаёт текущую версию схемы |
 | `jupiter` | всё про JUnit: `annotation` (`@User`, `@ProbeTarget`), `extension` (`UserExtension`; через ServiceLoader в этом порядке: `AllureEnvironmentExtension` — после прогона пишет окружение для Allure, `StandReadinessExtension` — перед задачей `e2e` ждёт стенд, `StandSchemaExtension` — затем сверяет миграции), `condition` (`ProbeTargetCondition` — мишени probe-тестов выполняются только внутри EngineTestKit), `probe` |
-| `data` | тестовые данные и их владельцы: `TestUser`, `UserFixture` с реализацией `SingleUserFixture` и декораторами `UserWithFriendsFixture`, `UserWithIncomeInvitationsFixture`, `UserRequest` собирает их цепочку; `db` — `Databases`, `Jdbc` и неизменяемые объекты строк (`Row`/`Rows`: `AuthAccount`, `ApiProfile`, `Friendship`, `Friendships`), которые прячут весь SQL за `create`/`delete`/`exists`; `Migrations` сверяет схему БД с миграциями бэкенда через Flyway validate и отдаёт текущую версию схемы |
-| `utils` | статические утилиты без состояния: `RandomDataUtils` — случайные username/password; сюда же будущие генераторы (описания фото и т.п.) |
+| `data` | тестовые данные и их владельцы: `TestUser`, `UserFixture` с реализацией `SingleUserFixture` и декораторами `UserWithFriendsFixture`, `UserWithIncomeInvitationsFixture`, `UserRequest` собирает их цепочку; `db` — `Databases`, `Jdbc` и неизменяемые объекты строк (`Row`/`Rows`: `AuthAccount`, `ApiProfile`, `Friendship`, `Friendships`), которые прячут весь SQL за `create`/`delete`/`exists` |
+| `utils` | заморожен: только `RandomDataUtils` — случайные username/password; новые классы сюда не добавляются |
 | `ui` | `page` — Page Objects, `component` — общие части страниц |
 | `test` | только тесты, по фичам: `auth`, `profile`, позже `people`, … |
 
-Правила: в `jupiter` нет SQL и локаторов; в `data` нет JUnit; в `test` нет локаторов и SQL; `ThreadLocal` для состояния теста не используется — состояние живёт в Store расширения.
+Правила содержания пакетов:
+
+1. Пакет называется по предметной области, а не по типу класса: новых пакетов-свалок `config`, `utils`, `helpers`, `common` не заводим. Каждый класс пакета подходит под его описание в таблице выше; если класс не подходит, ему нужен другой пакет, а не исключение в таблице.
+2. `config` — только `TestConfig`: читает системные свойства и переменные окружения и отдаёт значения (`String`, `URI`, `Duration`, `Path`, `boolean`). Без сети, SQL, ожиданий и объектов с поведением.
+3. `stand` — что входит в стенд и как проверить его готовность и схему. Без JUnit и без SQL строк.
+4. `jupiter` — только связка с JUnit: аннотации, реализации `Extension` и `ExecutionCondition`, их package-private помощники (как `SuiteRun`) и probe-тесты. Расширение собирает объекты из `config`, `stand`, `data` и вызывает их; сокетов, HTTP, SQL и локаторов в нём нет.
+5. `data` — тестовые данные и их владельцы, без JUnit; `data/db` — подключения и объекты строк, весь SQL спрятан за ними.
+6. `ui` — только `page` и `component` по skill `rfr-page-objects`.
+7. `test` — только тесты по фичам и общие сценарии фичи (как `PeopleLogin`); без локаторов и SQL.
+8. `utils` заморожен: генератор нового значения оформляется объектом в пакете своей предметной области.
+9. `ThreadLocal` для состояния теста не используется — состояние живёт в Store расширения.
 
 ## Агент
 

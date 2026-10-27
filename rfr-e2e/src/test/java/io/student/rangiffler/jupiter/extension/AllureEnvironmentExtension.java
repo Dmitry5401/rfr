@@ -2,7 +2,7 @@ package io.student.rangiffler.jupiter.extension;
 
 import io.student.rangiffler.config.TestConfig;
 import io.student.rangiffler.data.db.Databases;
-import io.student.rangiffler.data.db.Migrations;
+import io.student.rangiffler.stand.Migrations;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;

@@ -2,7 +2,7 @@ package io.student.rangiffler.jupiter.extension;
 
 import io.student.rangiffler.config.TestConfig;
 import io.student.rangiffler.data.db.Databases;
-import io.student.rangiffler.data.db.Migrations;
+import io.student.rangiffler.stand.Migrations;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

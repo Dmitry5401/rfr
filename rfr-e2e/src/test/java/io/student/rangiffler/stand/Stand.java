@@ -1,4 +1,4 @@
-package io.student.rangiffler.config;
+package io.student.rangiffler.stand;
 
 import java.time.Duration;
 import java.util.List;
