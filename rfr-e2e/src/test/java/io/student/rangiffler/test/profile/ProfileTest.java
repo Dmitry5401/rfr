@@ -11,6 +11,9 @@ import java.nio.file.Path;
 import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import java.nio.file.Files;
+import java.io.IOException;
+import java.util.Base64;
 
 @UsePlaywright
 @DisplayName("Профиль")
@@ -55,11 +58,21 @@ class ProfileTest {
     @Test
     @DisplayName("Сохранённый аватар виден после перезагрузки")
     void savedAvatarStaysAfterReload(Page page, @User TestUser user) {
+        Path avatar = avatar();
         openProfile(page, user)
-            .uploadAvatar(avatar())
+            .uploadAvatar(avatar)
             .clickSave()
             .reload()
-            .checkThatAvatarSaved();
+            .checkThatAvatarSaved(avatarDataUrl(avatar));
+    }
+
+    private static String avatarDataUrl(Path avatar) {
+        try {
+            String encoded = Base64.getEncoder().encodeToString(Files.readAllBytes(avatar));
+            return "data:image/png;base64," + encoded;
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot read " + avatar, e);
+        }
     }
 
     @Test
