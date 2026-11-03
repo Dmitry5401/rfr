@@ -30,12 +30,12 @@ description: Создаёт и меняет Page Objects и компоненты
 
 ## Практика занятия 01
 
-### MUI Select: combobox, затем option с page
-Поле вроде Location — MUI Select с ролью combobox. Действие выбора страны:
-- клик по `page.getByRole(AriaRole.COMBOBOX, … setName("Location"))`;
-- клик по `page.getByRole(AriaRole.OPTION, … setName(country).setExact(true))`.
+### MUI Select: option фильтруется по вложенному IMG
+Поле вроде Location — MUI Select с ролью combobox. Доступное имя пункта бывает составным (`France France`), поэтому `getByRole(OPTION)` с `setName(country).setExact(true)` пункт не находит. Действие выбора страны:
+- клик по `page.getByRole(AriaRole.COMBOBOX, … setName("Location").setExact(true))`;
+- клик по `page.getByRole(AriaRole.OPTION).filter(… setHas(page.getByRole(AriaRole.IMG, … setName(country).setExact(true))))`.
 
-Список опций рисуется отдельным оверлеем, поэтому локатор `option` берётся у `page`, а не у локатора закрытого combobox. В тест передаётся одно и то же название страны. Проверка читает текст combobox после выбора.
+Список опций рисуется отдельным оверлеем, поэтому локатор `option` берётся у `page`, а не у локатора закрытого combobox. Точное имя страны задаётся у вложенного `IMG`, а не у самого `option`. В тест передаётся одно и то же название страны. Проверка читает этот же флаг внутри combobox: `location.getByRole(IMG, … setName(country).setExact(true))`.
 
 ### Ожидание ответа мутации — внутри действия
 `clickSave()` кликает Save внутри `page.waitForResponse(...)`: URL содержит `/graphql`, тело запроса содержит `UpdateUser`, ответ успешный. Тест вызывает `clickSave()` и сразу `checkThat...`. В тесте нет своего `waitForResponse` и нет `waitForTimeout`. Аватар после сохранения — `img`, у которого `src` начинается с `data:image/`.
