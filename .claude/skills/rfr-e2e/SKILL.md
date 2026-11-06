@@ -45,3 +45,6 @@ Page Objects и компоненты этот skill не пишет. Для `ui/
 ./gradlew :rfr-e2e:test --tests '*RegistrationTest' --rerun-tasks
 ./gradlew :rfr-e2e:test --tests '*MainPageTest' --rerun-tasks
 ./gradlew :rfr-e2e:allureReport
+```
+
+`installPlaywright` ставит Chromium один раз. Отчёт: `rfr-e2e/build/reports/allure-report/allureReport/index.html`. Проход сценария через Playwright MCP запуском теста не считается.
