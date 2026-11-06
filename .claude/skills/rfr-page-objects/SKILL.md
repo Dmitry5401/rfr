@@ -54,14 +54,3 @@ description: Создаёт и меняет Page Objects и компоненты
 MySQL — порт 3306, пользователь `root`, пароль `secret`.
 
 Стенд: JDK 25, Node 22+, Docker. Не запускай `localenv.sh`: он останавливает и удаляет все Docker-контейнеры машины. Поднимай только MySQL (`docker run --name rfr-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=secret -d mysql:8.4.7`), затем сервисы и фронт.
-
-Настройки тестов — `TestConfig`: `-Drfr.<ключ>=…` или переменная `RFR_<КЛЮЧ>`, иначе значение по умолчанию. Подробности — `rfr-e2e/README.md`.
-
-```bash
-./gradlew :rfr-e2e:installPlaywright
-./gradlew :rfr-e2e:test --tests '*RegistrationTest' --rerun-tasks
-./gradlew :rfr-e2e:test --tests '*MainPageTest' --rerun-tasks
-./gradlew :rfr-e2e:allureReport
-```
-
-Структура пакетов — `rfr-e2e/README.md`, раздел «Архитектура»: `config`, `jupiter`, `data`, `api`, `ui`, `assertions`, `test`. Новые классы кладутся в существующие пакеты. Тестовые данные создаются и удаляются фикстурами (`@User` → `UserExtension` → `UserFixture`), без широких `DELETE` и `TRUNCATE`. Фикстуры, SQL и JUnit extensions не пишутся внутри Page Object.
