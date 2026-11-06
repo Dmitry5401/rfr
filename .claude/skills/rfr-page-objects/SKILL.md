@@ -62,3 +62,6 @@ MySQL — порт 3306, пользователь `root`, пароль `secret`.
 ./gradlew :rfr-e2e:test --tests '*RegistrationTest' --rerun-tasks
 ./gradlew :rfr-e2e:test --tests '*MainPageTest' --rerun-tasks
 ./gradlew :rfr-e2e:allureReport
+```
+
+Структура пакетов — `rfr-e2e/README.md`, раздел «Архитектура»: `config`, `jupiter`, `data`, `api`, `ui`, `assertions`, `test`. Новые классы кладутся в существующие пакеты. Тестовые данные создаются и удаляются фикстурами (`@User` → `UserExtension` → `UserFixture`), без широких `DELETE` и `TRUNCATE`. Фикстуры, SQL и JUnit extensions не пишутся внутри Page Object.
