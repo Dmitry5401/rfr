@@ -37,6 +37,9 @@ description: Создаёт и меняет Page Objects и компоненты
 
 Список опций рисуется отдельным оверлеем, поэтому локатор `option` берётся у `page`, а не у локатора закрытого combobox. Точное имя страны задаётся у вложенного `IMG`, а не у самого `option`. В тест передаётся одно и то же название страны. Проверка читает этот же флаг внутри combobox: `location.getByRole(IMG, … setName(country).setExact(true))`.
 
+### Ожидание ответа мутации — внутри действия
+`clickSave()` кликает Save внутри `page.waitForResponse(...)`: URL содержит `/graphql`, тело запроса содержит `UpdateUser`, ответ успешный. Тест вызывает `clickSave()` и сразу `checkThat...`. В тесте нет своего `waitForResponse` и нет `waitForTimeout`. Аватар после сохранения — `img`, чей `src` равен data URL загруженного файла. Ожидаемая строка приходит из теста в `checkThatAvatarSaved(avatarSrc)`.
+
 ## Контекст проекта
 
 Учебный проект Rangiffler курса Java Advanced 3.0. Регистрация, вход, профиль и дружба настоящие. Фото, лайки, лента и статистика возвращаются из JSON-моков `rfr-api/src/main/resources/mock/*.json`.
@@ -59,5 +62,3 @@ MySQL — порт 3306, пользователь `root`, пароль `secret`.
 ./gradlew :rfr-e2e:test --tests '*RegistrationTest' --rerun-tasks
 ./gradlew :rfr-e2e:test --tests '*MainPageTest' --rerun-tasks
 ./gradlew :rfr-e2e:allureReport
-### Ожидание ответа мутации — внутри действия
-`clickSave()` кликает Save внутри `page.waitForResponse(...)`: URL содержит `/graphql`, тело запроса содержит `UpdateUser`, ответ успешный. Тест вызывает `clickSave()` и сразу `checkThat...`. В тесте нет своего `waitForResponse` и нет `waitForTimeout`. Аватар после сохранения — `img`, чей `src` равен data URL загруженного файла. Ожидаемая строка приходит из теста в `checkThatAvatarSaved(avatarSrc)`.
