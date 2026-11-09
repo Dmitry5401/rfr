@@ -41,8 +41,6 @@ E2E-тесты Rangiffler: JUnit 6.1.3, Playwright Java 1.63 (`@UsePlaywright`),
 
 Правила: в `jupiter` нет SQL и локаторов; в `data` нет JUnit; в `test` нет локаторов и SQL; `ThreadLocal` для состояния теста не используется — состояние живёт в Store расширения.
 
-## Два теста занятия 1
-
 - `RegistrationTest` — регистрация через UI, вход, главная, имя в профиле. Пользователь удаляется в `@AfterEach` той же фикстурой.
 - `MainPageTest` — пользователь приходит параметром `@User TestUser`: `UserExtension` до теста создаёт его SQL-скриптами в `rangiffler-auth` (`UserFixture.create()`), после теста удаляет профиль API, authority и user (`close()` через Store).
 

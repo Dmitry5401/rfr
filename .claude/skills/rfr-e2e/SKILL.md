@@ -7,9 +7,15 @@ description: Создаёт и меняет код модуля rfr-e2e, кро�
 
 E2E-тесты Rangiffler: JUnit 6, Playwright Java (`@UsePlaywright`), Allure 3, `JdbcClient` для фикстур. Один source set `src/test`, корневой пакет `io.student.rangiffler`.
 
-Page Objects и компоненты этот skill не пишет. Для `ui/page` и `ui/component` применяй skill `rfr-page-objects`.
+## Конфигурация Настройки тестов
 
-## Пакеты
+`TestConfig` читает `-Drfr.<ключ>=…` → переменная `RFR_<КЛЮЧ>` → значение по умолчанию. Gradle передаёт все `-Drfr.*` в тестовую JVM. Адреса и учётка БД не хардкодятся в тестах и фикстурах.
+
+## Создание Page Objects
+
+Для `ui/page` и `ui/component` применяй skill `rfr-page-objects`.
+
+## Архитектура проекта. Пакеты
 
 Новые классы кладутся в существующие пакеты. Описание — `rfr-e2e/README.md`, раздел «Архитектура».
 
@@ -25,9 +31,6 @@ Page Objects и компоненты этот skill не пишет. Для `ui/
 
 Границы: в `jupiter` нет SQL и локаторов; в `data` нет JUnit; в `test` нет локаторов и SQL. `ThreadLocal` для состояния теста не используется: состояние живёт в Store расширения. Тестовые данные создаются и удаляются фикстурами (`@User` → `UserExtension` → `UserFixture`), без широких `DELETE` и `TRUNCATE`.
 
-## Настройки тестов
-
-`TestConfig` читает `-Drfr.<ключ>=…` → переменная `RFR_<КЛЮЧ>` → значение по умолчанию. Gradle передаёт все `-Drfr.*` в тестовую JVM. Адреса и учётка БД не хардкодятся в тестах и фикстурах.
 
 | Ключ | По умолчанию |
 |---|---|
