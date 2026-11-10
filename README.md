@@ -77,10 +77,11 @@ Mock контроллеры возвращают статические данн
 #### 1. Запусти зависимости (БД):
 
 ```bash
-bash localenv.sh
+docker compose up -d
 ```
 
-Скрипт запустит MySQL в Docker контейнере.
+Поднимется MySQL (`mysql:8.4.7`) на порту `3306`, пользователь `root`, пароль `secret`.
+Дождись статуса `healthy`: `docker compose ps`.
 
 #### 2. Запусти rfr-auth:
 
