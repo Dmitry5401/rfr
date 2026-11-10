@@ -15,6 +15,7 @@ E2E-тесты Rangiffler: JUnit 6, Playwright Java (`@UsePlaywright`), Allure 3
 
 Для `ui/page` и `ui/component` применяй skill `rfr-page-objects`.
 
+## Архитектура проекта. Пакеты
 ## Архитектура проекта
 
 1. Класс `final`, поля `private final`: `Page`, `Locator`, компоненты. Исключение — `public static final String URL` с базой из `TestConfig`; он есть у каждой страницы, даже если на неё попадают только переходом.
