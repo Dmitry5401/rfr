@@ -8,21 +8,6 @@ description: Создаёт и меняет Page Objects и компоненты
 Страницы — `rfr-e2e/src/test/java/io/student/rangiffler/ui/page`, общие части — `ui/component`, адреса — `config/TestConfig`.
 Доступные имена и роли элементов подтверждай в браузере через Playwright MCP (`http://localhost:3001`), не угадывай по исходникам фронта.
 
-## Контракт
-
-1. Класс `final`, поля `private final`: `Page`, `Locator`, компоненты. Исключение — `public static final String URL` с базой из `TestConfig`; он есть у каждой страницы, даже если на неё попадают только переходом.
-2. Конструктор принимает только `Page` и только присваивает поля: без переходов, кликов, проверок, ожиданий и SQL.
-3. Композиция вместо наследования: общие части (`CredentialsForm`, `HeaderComponent`) — компоненты с тем же `Page`, базовых классов нет.
-4. Каждый публичный метод страницы и компонента — с `@Step`, и каждый параметр попадает в текст шага: `@Step("Заполнить форму входа: {username} / {password}")`.
-5. Переход возвращает объект следующей страницы, действие и проверка на текущей — `this`.
-6. Одно бизнес-действие — один метод, имя которого называет форму: `fillLoginForm(username, password)`, `fillRegistrationForm(...)`. Без безликих `fillForm`/`fill`/`submit` и цепочек `fillUsername().fillPassword()`; отдельный метод на поле — только если тесту нужно именно поле (валидация).
-7. Действие отдельно от проверки: `fill…`/`click…` ничего не проверяют; `checkThat…` только проверяют через `PlaywrightAssertions.assertThat(locator)` и ничего не кликают. Без `locator.isVisible()` в JUnit-проверках и ручных ожиданий.
-8. Без `checkThatOpened`, `checkPageLoaded`, `isLoaded`, `waitUntilLoaded`: `click`/`fill` ждут элемент, web-first assertions ждут состояние. URL и видимость страницы проверяем, только когда переход и есть предмет теста.
-9. Локаторы: `getByRole` с точным `name`, `getByLabel`, `getByPlaceholder`, `getByText` с точным совпадением, `getByTestId`. Без `first()`/`nth()`, MUI-классов и XPath; неуникальный элемент сужай родителем: `page.getByRole(AriaRole.BANNER).getByRole(…)`.
-10. Проверка не должна быть тавтологией локатора: `assertThat(heading("Travels map")).hasText("Travels map")` ничего не доказывает. Ожидаемое значение приходит из теста (`checkThatUsername(username)`).
-11. Вход только через UI; `access_token`/`id_token` в `localStorage` не подставлять (до занятия 13).
-12. Без комментариев и Javadoc: смысл передают имена методов и текст `@Step`.
-
 ## Проверка результата
 
 Прогон `./gradlew :rfr-e2e:test --tests '<Тест>' --rerun-tasks` — единственное подтверждение. Проход сценария через MCP запуском теста не считается.
@@ -42,7 +27,7 @@ description: Создаёт и меняет Page Objects и компоненты
 
 ## Контекст проекта
 
-Учебный проект Rangiffler курса Java Advanced 3.0. Регистрация, вход, профиль и дружба настоящие. Фото, лайки, лента и статистика возвращаются из JSON-моков `rfr-api/src/main/resources/mock/*.json`.
+Учебный проект Rangiffler. Регистрация, вход, профиль и дружба настоящие. Фото, лайки, лента и статистика возвращаются из JSON-моков `rfr-api/src/main/resources/mock/*.json`.
 
 | Модуль | Что это | Порт |
 |---|---|---|
@@ -52,5 +37,7 @@ description: Создаёт и меняет Page Objects и компоненты
 | `rfr-e2e` | E2E-тесты: JUnit 6, Playwright Java, Allure 3 | — |
 
 MySQL — порт 3306, пользователь `root`, пароль `secret`.
+
+## Окружение
 
 Стенд: JDK 25, Node 22+, Docker. Не запускай `localenv.sh`: он останавливает и удаляет все Docker-контейнеры машины. Поднимай только MySQL (`docker run --name rfr-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=secret -d mysql:8.4.7`), затем сервисы и фронт.
