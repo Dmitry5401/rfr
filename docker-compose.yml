@@ -11,3 +11,4 @@ services:
 
 volumes:
   mysql-volume:
+    name: mysql-volume
