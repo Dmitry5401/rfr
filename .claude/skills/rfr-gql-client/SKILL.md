@@ -46,6 +46,7 @@ npm ci
 npm run lint
 npm run build
 npm run dev   # http://localhost:3001 — нужны rfr-auth :9001 и rfr-api :8081
+# бэкенды: из корня репозитория ./gradlew runAll
 ```
 
 `lint` (`--max-warnings 0`) и `build` (`tsc && vite build`) — обязательный минимум после правок TypeScript/React. Сценарий в браузере не заменяет красный `tsc`/eslint.
@@ -59,4 +60,4 @@ npm run dev   # http://localhost:3001 — нужны rfr-auth :9001 и rfr-api :
 | `rfr-gql-client` | React + Apollo | 3001 |
 | `rfr-e2e` | Playwright / JUnit E2E | — |
 
-Page Objects и локаторы UI для тестов пишет skill `rfr-page-objects` в `rfr-e2e`, не этот skill.
+Бэкенды вместе: `./gradlew runAll`. Page Objects и локаторы UI для тестов пишет skill `rfr-page-objects` в `rfr-e2e`, не этот skill.

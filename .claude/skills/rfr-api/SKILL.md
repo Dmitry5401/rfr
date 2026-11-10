@@ -39,8 +39,8 @@ GraphQL API Rangiffler: Java 25, Spring Boot 4.1.1, Spring for GraphQL, DGS Code
 ## Проверка результата
 
 ```bash
-# Нужны MySQL :3306 и запущенный rfr-auth :9001 (JWKS)
-cd rfr-api && ../gradlew bootRun
+# оба бэкенда одной командой (нужен org.gradle.parallel=true):
+./gradlew runAll
 curl -s -X POST http://localhost:8081/graphql \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
@@ -58,6 +58,6 @@ curl -s -X POST http://localhost:8081/graphql \
 | `rfr-gql-client` | React + Apollo (`npm run dev`) | 3001 |
 | `rfr-e2e` | JUnit 6 + Playwright Java + Allure 3 | — |
 
-MySQL: `root` / `secret`. Не запускай `localenv.sh` — он останавливает и удаляет все Docker-контейнеры машины.
+MySQL: `root` / `secret`. Не запускай `localenv.sh` — он останавливает и удаляет все Docker-контейнеры машины. Бэкенды вместе: `./gradlew runAll`.
 
 Моки должны оставаться в проекте до явного указания на необходимость их замены на реальные реализации.

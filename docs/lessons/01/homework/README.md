@@ -13,7 +13,6 @@
    ```
 
 3. Проверьте окружение: JDK 25, Node.js 22+, Docker.
-4. Поднимите стенд. **Не запускайте `localenv.sh`**: он останавливает и удаляет все Docker-контейнеры на машине.
 
    ```bash
    docker run --name rfr-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=secret -d mysql:8.4.7
