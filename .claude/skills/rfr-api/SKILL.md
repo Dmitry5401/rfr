@@ -59,3 +59,5 @@ curl -s -X POST http://localhost:8081/graphql \
 | `rfr-e2e` | JUnit 6 + Playwright Java + Allure 3 | — |
 
 MySQL: `root` / `secret`. Не запускай `localenv.sh` — он останавливает и удаляет все Docker-контейнеры машины.
+
+Моки должны оставаться в проекте до явного указания на необходимость их замены на реальные реализации.

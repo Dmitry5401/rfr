@@ -186,6 +186,7 @@ OAuth-авторизации, consent и ключи в БД не хранятс�
 ## Запуск
 
 Требования: JDK 25 (Gradle toolchain), Docker для MySQL.
+Доказательство корректности теста - запуск gradle таски.
 
 ```bash
 # из корня проекта: MySQL в Docker
