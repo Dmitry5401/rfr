@@ -17,8 +17,6 @@ description: Общий контекст учебного проекта Rangiff
 | `rfr-e2e` | E2E: JUnit 6, Playwright Java, Allure 3 | — | `rfr-e2e` |
 | Page Objects в `rfr-e2e` | UI pages/components | — | `rfr-page-objects` |
 
-Краткий запуск для человека — также `zapusk.md`.
-
 ## Стек
 
 - JDK 25, Gradle 9.7.1 (wrapper в корне); бэкенды — Spring Boot 4.1.1
@@ -28,24 +26,17 @@ description: Общий контекст учебного проекта Rangiff
 
 ## Запуск стенда
 
-Требования: JDK 25, Node.js 22+, Docker Desktop (демон должен быть запущен).
+Требования: JDK 25, Node.js 22+, Docker Desktop (демон должен быть запущен). Если остался контейнер от `docker run` — `docker rm -f rfr-mysql` (volume `mysql-volume` сохранится).
 
 ```bash
-# 1. MySQL
-docker compose up -d
-# или: bash localenv.sh   # обёртка: compose up -d mysql --wait
-# дождись healthy: docker compose ps
-
-# 2. Оба бэкенда
-./gradlew runAll
-# по отдельности: ./gradlew :rfr-auth:bootRun  и  ./gradlew :rfr-api:bootRun
-
-# 3. Фронт
-cd rfr-gql-client && npm ci && npm run dev
-
-# 4. E2E (нужен поднятый стенд)
-./gradlew e2e
+docker compose up -d --wait                    # MySQL, ждём healthy
+./gradlew runAll                               # rfr-auth :9001 и rfr-api :8081
+(cd rfr-gql-client && npm ci && npm run dev)   # http://localhost:3001
+./gradlew :rfr-e2e:installPlaywright           # браузер для тестов, один раз
+./gradlew e2e                                  # всегда гоняет тесты (не UP-TO-DATE)
 ```
+
+Кратко для человека — также `zapusk.md`. По отдельности бэкенды: `./gradlew :rfr-auth:bootRun` и `./gradlew :rfr-api:bootRun`.
 
 | URL | Что |
 |---|---|
@@ -53,7 +44,7 @@ cd rfr-gql-client && npm ci && npm run dev
 | http://localhost:8081/graphql | api (GraphiQL: `/graphiql`) |
 | http://localhost:3001 | фронт |
 
-Остановка: `bash ports.sh` (9001/8081/3001), `docker compose down` (данные в volume `mysql-volume`).
+Остановка: Ctrl+C в терминалах `runAll` / `npm run dev`; при занятых портах — `bash ports.sh` (9001/8081/3001); MySQL — `docker compose down` (данные в volume `mysql-volume`).
 
 ## Сквозные правила
 

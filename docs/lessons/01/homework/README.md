@@ -26,7 +26,7 @@
 
    ```bash
    ./gradlew :rfr-e2e:installPlaywright
-   ./gradlew :rfr-e2e:test --tests '*RegistrationTest' --tests '*MainPageTest' --rerun-tasks
+   ./gradlew :rfr-e2e:test --tests '*RegistrationTest' --tests '*MainPageTest'
    ./gradlew :rfr-e2e:allureReport
    ```
 
