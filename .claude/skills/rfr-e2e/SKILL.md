@@ -41,8 +41,8 @@ E2E: JUnit 6, Playwright Java (`@UsePlaywright`), Allure 3, `JdbcClient` для 
 ```bash
 ./gradlew :rfr-e2e:installPlaywright
 ./gradlew e2e                                          # все тесты модуля
-./gradlew :rfr-e2e:test --tests '*RegistrationTest' --rerun-tasks
-./gradlew :rfr-e2e:test --tests '*MainPageTest' --rerun-tasks
+./gradlew :rfr-e2e:test --tests '*RegistrationTest'
+./gradlew :rfr-e2e:test --tests '*MainPageTest'
 ./gradlew :rfr-e2e:allureReport
 ```
 
