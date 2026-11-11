@@ -42,6 +42,9 @@ docker compose up -d
 
 # 3. Фронт
 cd rfr-gql-client && npm ci && npm run dev
+
+# 4. E2E (нужен поднятый стенд)
+./gradlew e2e
 ```
 
 | URL | Что |

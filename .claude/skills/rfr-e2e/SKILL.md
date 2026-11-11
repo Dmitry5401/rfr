@@ -40,9 +40,10 @@ E2E: JUnit 6, Playwright Java (`@UsePlaywright`), Allure 3, `JdbcClient` для 
 
 ```bash
 ./gradlew :rfr-e2e:installPlaywright
+./gradlew e2e                                          # все тесты модуля
 ./gradlew :rfr-e2e:test --tests '*RegistrationTest' --rerun-tasks
 ./gradlew :rfr-e2e:test --tests '*MainPageTest' --rerun-tasks
 ./gradlew :rfr-e2e:allureReport
 ```
 
-`installPlaywright` ставит Chromium один раз. Отчёт: `rfr-e2e/build/reports/allure-report/allureReport/index.html`. Проход через Playwright MCP запуском теста не считается.
+`installPlaywright` ставит Chromium один раз. `e2e` — корневая таска, сейчас гоняет `:rfr-e2e:test` целиком. Отчёт: `rfr-e2e/build/reports/allure-report/allureReport/index.html`. Проход через Playwright MCP запуском теста не считается.
