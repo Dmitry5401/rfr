@@ -9,6 +9,7 @@
 docker compose up -d          # MySQL :3306, root/secret; дождись healthy
 ./gradlew runAll              # auth :9001, api :8081
 cd rfr-gql-client && npm ci && npm run dev   # :3001
+./gradlew e2e                 # все тесты rfr-e2e
 ```
 
 Остановка: `bash ports.sh`, `docker compose down`.
