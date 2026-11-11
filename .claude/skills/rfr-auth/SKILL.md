@@ -5,7 +5,7 @@ description: Создаёт и меняет код модуля rfr-auth — Spr
 
 # Модуль rfr-auth
 
-Authorization Server Rangiffler: Java 25, Spring Boot 4.1.1, Spring Security 7 + Spring Authorization Server, JPA, Flyway, MySQL (`rangiffler-auth`), Thymeleaf. Порт `9001`. Корневой пакет `io.student.rangiffler`.
+Authorization Server: Spring Boot 4.1.1, Spring Authorization Server, JPA, Flyway, MySQL (`rangiffler-auth`), Thymeleaf. Порт `9001`. Пакет `io.student.rangiffler`. Стенд — `zapusk.md`.
 
 ## Контракт
 
@@ -19,7 +19,7 @@ Authorization Server Rangiffler: Java 25, Spring Boot 4.1.1, Spring Security 7 +
 8. `GET /login` без сохранённого OAuth-запроса (`/oauth2/authorize` с redirect фронта) уводит на фронт — это ожидаемо. Вход начинать с authorize или кнопки Login.
 9. Logout: revoke access token → `/connect/logout` с `id_token_hint` → `OidcClearCookiesLogoutHandler` чистит `JSESSIONID` и `XSRF-TOKEN`.
 10. Тема: `ThemeCookieFilter` кладёт `?theme=light|dark` в cookie `rangiffler-theme`. CORS origins — `CorsCustomizer` под `rangiffler-front.base-uri`.
-11. Без комментариев и Javadoc: смысл передают имена классов и методов. Подробности — `rfr-auth/README.md`.
+11. Без комментариев и Javadoc. Подробности — `rfr-auth/README.md`.
 
 ## Пакеты
 
@@ -30,31 +30,14 @@ Authorization Server Rangiffler: Java 25, Spring Boot 4.1.1, Spring Security 7 +
 | `data` + `repository` | `UserEntity`, `AuthorityEntity`, `Authority`, `UserRepository` |
 | `model` | `RegistrationForm` |
 | `service` | `UserService` / impl, `DatabaseUserDetailsService`, logout handler, CORS, GlobalExceptionHandler |
-| `validation` | `@equalPasswords`, `@NoWhitespace` |
+| `validation` | `@EqualPasswords`, `@NoWhitespace` |
 | `resources/templates` | login / register / error |
 | `resources/db/migration/rangiffler-auth` | Flyway: `user`, `authority` |
-
-## Endpoints (ориентиры)
-
-`/oauth2/authorize`, `/oauth2/token`, `/oauth2/revoke`, `/oauth2/jwks`, `/.well-known/openid-configuration`, `/userinfo`, `/connect/logout`, `/login`, `/register`.
 
 ## Проверка результата
 
 ```bash
-# MySQL: docker compose up -d
-./gradlew runAll
 curl -s http://localhost:9001/.well-known/openid-configuration
 ```
 
-Прогон сценария login/register через браузер или E2E не заменяет проверку, что сервис стартует и отдаёт OIDC discovery. Изменения revocation/token проверяй запросом к `/oauth2/token` или `/oauth2/revoke` с публичным `client_id`.
-
-## Контекст проекта
-
-| Модуль | Роль | Порт |
-|---|---|---|
-| `rfr-auth` | Authorization Server, схема `rangiffler-auth` | 9001 |
-| `rfr-api` | GraphQL Resource Server, схема `rangiffler-api` | 8081 |
-| `rfr-gql-client` | React + Apollo (`npm run dev`) | 3001 |
-| `rfr-e2e` | JUnit 6 + Playwright Java + Allure 3 | — |
-
-MySQL: `root` / `secret`, порт 3306 (`docker compose up -d`). Стенд: JDK 25, Node 22+, Docker. Бэкенды вместе: `./gradlew runAll`. См. `zapusk.md`.
+Стенд поднимай по `zapusk.md`. UI/E2E-сценарий не заменяет проверку OIDC discovery. Revocation/token — запросом к `/oauth2/token` или `/oauth2/revoke` с публичным `client_id`.

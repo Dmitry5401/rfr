@@ -16,11 +16,7 @@ bash localenv.sh
 - порт `3306`, пользователь `root`, пароль `secret`
 - дождись `healthy`: `docker compose ps`
 
-Не используй старый вариант `localenv.sh`, который останавливал все Docker-контейнеры машины: сейчас скрипт только поднимает MySQL через compose и ждёт healthcheck.
-
 ## 2. Бэкенды
-
-Одной командой (`org.gradle.parallel=true` уже в `gradle.properties`):
 
 ```bash
 ./gradlew runAll
