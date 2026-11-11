@@ -45,3 +45,6 @@ allure-results/
 
 # Playwright MCP
 .playwright-mcp/
+
+# Soft-delete backups (agent renames instead of rm)
+*.bak
