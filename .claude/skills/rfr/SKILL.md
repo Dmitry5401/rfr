@@ -76,4 +76,3 @@ cd rfr-gql-client && npm ci && npm run dev
 | `rfr-gql-client/src/**/*.{ts,tsx,js,jsx,css}` | `npm run lint` + `tsc --noEmit` |
 
 - Cursor: `.cursor/hooks.json` → `postToolUse` (`Write` / `StrReplace`) → `additional_context`
-- Claude Code: `.claude/settings.json` → `PostToolUse` (`Edit|Write`) → `hookSpecificOutput.additionalContext`

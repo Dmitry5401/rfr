@@ -72,16 +72,6 @@ fi
 
 [[ -z "$report" ]] && exit 0
 
-# Cursor: top-level additional_context
-# Claude Code: hookSpecificOutput.additionalContext
-jq -n \
-  --arg ctx "$report" \
-  '{
-     additional_context: $ctx,
-     hookSpecificOutput: {
-       hookEventName: "PostToolUse",
-       additionalContext: $ctx
-     }
-   }'
+jq -n --arg ctx "$report" '{ additional_context: $ctx }'
 
 exit 0
