@@ -5,14 +5,14 @@ description: Создаёт и меняет код модуля rfr-api — Grap
 
 # Модуль rfr-api
 
-GraphQL API Rangiffler: Java 25, Spring Boot 4.1.1, Spring for GraphQL, DGS Codegen, Spring Security 7 (JWT Resource Server), JPA, Flyway, MySQL (`rangiffler-api`). Порт `8081`, endpoint `POST /graphql`. Корневой пакет `io.student.rangiffler`.
+GraphQL API: Spring Boot 4.1.1, Spring for GraphQL, DGS Codegen, JWT Resource Server, JPA, Flyway, MySQL (`rangiffler-api`). Порт `8081`, `POST /graphql`. Пакет `io.student.rangiffler`. Общий контекст и стенд — skill `rfr`.
 
 ## Контракт
 
 1. Схема — единственный источник контракта: `src/main/resources/graphql/query.graphqls`. Java-модели (`User`, `Photo`, inputs…) генерирует DGS Codegen в `io.student.rangiffler.model.types` (`./gradlew :rfr-api:generateJava`). Не пиши эти типы руками и не коммить `build/generated`.
 2. `UserConnection` / `PhotoConnection` мапятся на `Page<...>`, скаляр `Date` — на `LocalDate`.
 3. Реально на БД: `Query.user` / `users` / `countries`, `Mutation.user` / `friendship`, поля дружбы у `User`. Профиль создаётся при первом `Query.user` со страной `ru`. UUID в `rangiffler-api` и `rangiffler-auth` независимы; связь только по `username` (`sub` JWT).
-4. Mock (ничего не сохраняют): `Query.feed` / `Feed.photos` / `Feed.stat` / `Photo.likes`, `Mutation.photo` / `deletePhoto`. Данные — `resources/mock/query_feed.json` и `query_feed_with_friends.json`. Успешный ответ mock-мутации не доказывает персистентность.
+4. Mock (ничего не сохраняют): `Query.feed` / `Feed.photos` / `Feed.stat` / `Photo.likes`, `Mutation.photo` / `deletePhoto`. Данные — `resources/mock/query_feed.json` и `query_feed_with_friends.json`. Успешный ответ mock-мутации не доказывает персистентность. Моки не убирай без явного запроса заменить их реализацией.
 5. Таблицы `photo`, `like`, `photo_like`, `statistic` в миграции уже есть, но код их не использует — реализация фото/лайков/статистики отдельная задача диплома; не смешивай её с правками пользователей/дружбы без явного запроса.
 6. Security (`RangifflerApiConfiguration`): JWT по JWKS `rfr-auth` (`issuer-uri`), обязательный audience `rangiffler-api`. В Bearer только access token; `id_token` (aud = `client`) — 401. Claim `authorities` → `GrantedAuthority` без префикса. Query — `@PreAuthorize("hasAuthority('read')")`, mutation — `hasAuthority('write')`. Username текущего пользователя — `@AuthenticationPrincipal Jwt` → `sub`.
 7. Ошибки: HTTP GraphQL часто 200; смотри `errors`. `GraphQlExceptionResolver`: `ResourceNotFoundException` → `NOT_FOUND`, `FriendshipActionException` / `IllegalArgumentException` → `BAD_REQUEST`, иначе `INTERNAL_ERROR` без внутренних деталей. Невалидный Bearer — HTTP 401 до GraphQL.
@@ -39,25 +39,10 @@ GraphQL API Rangiffler: Java 25, Spring Boot 4.1.1, Spring for GraphQL, DGS Code
 ## Проверка результата
 
 ```bash
-# MySQL: docker compose up -d
-./gradlew runAll
 curl -s -X POST http://localhost:8081/graphql \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <access_token>" \
   -d '{"query":"{ user { id username location { code } } }"}'
 ```
 
-`access_token` — из localStorage фронта после логина (ключ `access_token`), не `id_token`. Сборка/генерация моделей: `./gradlew :rfr-api:generateJava` или `bootRun`/`build`.
-
-## Контекст проекта
-
-| Модуль | Роль | Порт |
-|---|---|---|
-| `rfr-auth` | Authorization Server, схема `rangiffler-auth` | 9001 |
-| `rfr-api` | GraphQL Resource Server, схема `rangiffler-api` | 8081 |
-| `rfr-gql-client` | React + Apollo (`npm run dev`) | 3001 |
-| `rfr-e2e` | JUnit 6 + Playwright Java + Allure 3 | — |
-
-MySQL: `root` / `secret` (`docker compose up -d`). Бэкенды вместе: `./gradlew runAll`. См. `zapusk.md`.
-
-Моки должны оставаться в проекте до явного указания на необходимость их замены на реальные реализации.
+Стенд — skill `rfr`. `access_token` из localStorage фронта после логина, не `id_token`. Модели: `./gradlew :rfr-api:generateJava`.

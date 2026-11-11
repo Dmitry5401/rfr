@@ -5,32 +5,11 @@ description: Создаёт и меняет код модуля rfr-e2e, кро�
 
 # Модуль rfr-e2e
 
-E2E-тесты Rangiffler: JUnit 6, Playwright Java (`@UsePlaywright`), Allure 3, `JdbcClient` для фикстур. Один source set `src/test`, корневой пакет `io.student.rangiffler`.
+E2E: JUnit 6, Playwright Java (`@UsePlaywright`), Allure 3, `JdbcClient` для фикстур. Source set `src/test`, пакет `io.student.rangiffler`. Общий контекст и стенд — skill `rfr`. Page Objects — skill `rfr-page-objects`.
 
-## Конфигурация Настройки тестов
+## Настройки
 
-`TestConfig` читает `-Drfr.<ключ>=…` → переменная `RFR_<КЛЮЧ>` → значение по умолчанию. Gradle передаёт все `-Drfr.*` в тестовую JVM. Адреса и учётка БД не хардкодятся в тестах и фикстурах.
-
-## Создание Page Objects
-
-Для `ui/page` и `ui/component` применяй skill `rfr-page-objects`.
-
-## Архитектура проекта. Пакеты
-
-Новые классы кладутся в существующие пакеты. Описание — `rfr-e2e/README.md`, раздел «Архитектура».
-
-| Пакет | Что лежит |
-|---|---|
-| `config` | `TestConfig` — единственная точка чтения настроек |
-| `jupiter` | JUnit: `annotation` (`@User`), `extension` (`UserExtension`), позже `condition`, `probe` |
-| `data` | тестовые данные и их владельцы: `TestUser`, `UserFixture`; `db` — `Databases`, `Jdbc` |
-| `utils` | статические утилиты без состояния: `RandomDataUtils` |
-| `ui` | только страницы и компоненты, по skill `rfr-page-objects` |
-| `test` | только тесты, по фичам: `auth`, `profile`, позже `people` |
-| `assertions` | проверки, которые не являются методами страницы |
-
-Границы: в `jupiter` нет SQL и локаторов; в `data` нет JUnit; в `test` нет локаторов и SQL. `ThreadLocal` для состояния теста не используется: состояние живёт в Store расширения. Тестовые данные создаются и удаляются фикстурами (`@User` → `UserExtension` → `UserFixture`), без широких `DELETE` и `TRUNCATE`.
-
+`TestConfig` читает `-Drfr.<ключ>=…` → `RFR_<КЛЮЧ>` → default. Gradle передаёт все `-Drfr.*` в тестовую JVM. Адреса и БД в тестах/фикстурах не хардкодить.
 
 | Ключ | По умолчанию |
 |---|---|
@@ -41,6 +20,22 @@ E2E-тесты Rangiffler: JUnit 6, Playwright Java (`@UsePlaywright`), Allure 3
 | `rfr.dbUser` / `rfr.dbPassword` | `root` / `secret` |
 | `rfr.browser` / `rfr.headless` | `chromium` / `true` |
 
+## Пакеты
+
+Новые классы — в существующие пакеты (`rfr-e2e/README.md`, «Архитектура»).
+
+| Пакет | Что лежит |
+|---|---|
+| `config` | `TestConfig` — единственная точка чтения настроек |
+| `jupiter` | JUnit: `annotation` (`@User`), `extension` (`UserExtension`), позже `condition`, `probe` |
+| `data` | `TestUser`, `UserFixture`; `db` — `Databases`, `Jdbc` |
+| `utils` | статические утилиты без состояния: `RandomDataUtils` |
+| `ui` | только страницы и компоненты — skill `rfr-page-objects` |
+| `test` | только тесты, по фичам: `auth`, `profile`, позже `people` |
+| `assertions` | проверки, которые не являются методами страницы |
+
+Границы: в `jupiter` нет SQL и локаторов; в `data` нет JUnit; в `test` нет локаторов и SQL. Состояние теста — в Store расширения, не в `ThreadLocal`. Данные — фикстурами (`@User` → `UserExtension` → `UserFixture`), без широких `DELETE`/`TRUNCATE`.
+
 ## Команды
 
 ```bash
@@ -50,4 +45,4 @@ E2E-тесты Rangiffler: JUnit 6, Playwright Java (`@UsePlaywright`), Allure 3
 ./gradlew :rfr-e2e:allureReport
 ```
 
-`installPlaywright` ставит Chromium один раз. Отчёт: `rfr-e2e/build/reports/allure-report/allureReport/index.html`. Проход сценария через Playwright MCP запуском теста не считается.
+`installPlaywright` ставит Chromium один раз. Отчёт: `rfr-e2e/build/reports/allure-report/allureReport/index.html`. Проход через Playwright MCP запуском теста не считается.

@@ -7,6 +7,7 @@ description: Создаёт и меняет Page Objects и компоненты
 
 Страницы — `rfr-e2e/src/test/java/io/student/rangiffler/ui/page`, общие части — `ui/component`, адреса — `config/TestConfig`.
 Доступные имена и роли элементов подтверждай в браузере через Playwright MCP (`http://localhost:3001`), не угадывай по исходникам фронта.
+Общий контекст и стенд — skill `rfr`. Тесты/фикстуры — skill `rfr-e2e`.
 
 ## Контракт
 
@@ -39,18 +40,3 @@ description: Создаёт и меняет Page Objects и компоненты
 
 ### Ожидание ответа мутации — внутри действия
 `clickSave()` кликает Save внутри `page.waitForResponse(...)`: URL содержит `/graphql`, тело запроса содержит `UpdateUser`, ответ успешный. Тест вызывает `clickSave()` и сразу `checkThat...`. В тесте нет своего `waitForResponse` и нет `waitForTimeout`. Аватар после сохранения — `img`, чей `src` равен data URL загруженного файла. Ожидаемая строка приходит из теста в `checkThatAvatarSaved(avatarSrc)`.
-
-## Контекст проекта
-
-Учебный проект Rangiffler курса Java Advanced 3.0. Регистрация, вход, профиль и дружба настоящие. Фото, лайки, лента и статистика возвращаются из JSON-моков `rfr-api/src/main/resources/mock/*.json`.
-
-| Модуль | Что это | Порт |
-|---|---|---|
-| `rfr-auth` | Spring Authorization Server, схема `rangiffler-auth` | 9001 |
-| `rfr-api` | GraphQL API `/graphql`, схема `rangiffler-api`; фото и лента — моки | 8081 |
-| `rfr-gql-client` | React + Apollo, собирается отдельно от Gradle (`npm run dev`) | 3001 |
-| `rfr-e2e` | E2E-тесты: JUnit 6, Playwright Java, Allure 3 | — |
-
-MySQL — порт 3306, пользователь `root`, пароль `secret`.
-
-Стенд: JDK 25, Node 22+, Docker. MySQL: `docker compose up -d` (или `bash localenv.sh` — обёртка над compose с `--wait`). Затем оба бэкенда (`./gradlew runAll`) и фронт (`npm run dev` в `rfr-gql-client`). Подробности — `zapusk.md`.

@@ -5,7 +5,7 @@ description: Создаёт и меняет код React-фронтенда Rang
 
 # Модуль rfr-gql-client
 
-SPA Rangiffler: React 19, TypeScript 6, Vite 8, Apollo Client 4, MUI 9, React Router 8. Dev-сервер — порт `3001` (`VITE_FRONT_HOST` / `vite.config.ts`). Собирается отдельно от Gradle: `npm ci` / `npm run dev`.
+SPA: React 19, TypeScript 6, Vite 8, Apollo Client 4, MUI 9, React Router 8. Порт `3001`. Вне Gradle: `npm ci` / `npm run dev`. Общий контекст и стенд — skill `rfr`. Page Objects — skill `rfr-page-objects`.
 
 ## Контракт
 
@@ -42,22 +42,8 @@ SPA Rangiffler: React 19, TypeScript 6, Vite 8, Apollo Client 4, MUI 9, React Ro
 
 ```bash
 cd rfr-gql-client
-npm ci
 npm run lint
 npm run build
-npm run dev   # http://localhost:3001 — нужны rfr-auth :9001 и rfr-api :8081
-# бэкенды: из корня репозитория ./gradlew runAll
 ```
 
-`lint` (`--max-warnings 0`) и `build` (`tsc && vite build`) — обязательный минимум после правок TypeScript/React. Сценарий в браузере не заменяет красный `tsc`/eslint.
-
-## Контекст проекта
-
-| Модуль | Роль | Порт |
-|---|---|---|
-| `rfr-auth` | Authorization Server | 9001 |
-| `rfr-api` | GraphQL API | 8081 |
-| `rfr-gql-client` | React + Apollo | 3001 |
-| `rfr-e2e` | Playwright / JUnit E2E | — |
-
-Бэкенды вместе: `./gradlew runAll`. Стенд целиком — `zapusk.md`. Page Objects и локаторы UI для тестов пишет skill `rfr-page-objects` в `rfr-e2e`, не этот skill.
+`lint` (`--max-warnings 0`) и `build` (`tsc && vite build`) — минимум после правок. Стенд и `npm run dev` — skill `rfr`.
