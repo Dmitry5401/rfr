@@ -15,11 +15,12 @@
 3. Проверьте окружение: JDK 25, Node.js 22+, Docker.
 
    ```bash
-   docker run --name rfr-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=secret -d mysql:8.4.7
-   (cd rfr-auth && ../gradlew bootRun)            # http://localhost:9001, запускать первым
-   (cd rfr-api && ../gradlew bootRun)             # http://localhost:8081/graphiql
+   docker compose up -d                            # MySQL :3306, root/secret; дождись healthy
+   ./gradlew runAll                                # auth :9001 и api :8081
    (cd rfr-gql-client && npm ci && npm run dev)   # http://localhost:3001
    ```
+
+   Кратко те же шаги — в `zapusk.md`.
 
 5. Убедитесь, что тесты работают:
 

@@ -193,8 +193,8 @@ OAuth-авторизации, consent и ключи в БД не хранятс�
 docker compose up -d
 # дождись healthy: docker compose ps
 
-cd rfr-auth
-../gradlew bootRun
+./gradlew runAll
+# или только auth: ./gradlew :rfr-auth:bootRun
 # или main class io.student.rangiffler.RangifflerAuthApplication из IDE
 ```
 

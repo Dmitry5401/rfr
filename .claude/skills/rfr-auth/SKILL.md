@@ -41,8 +41,7 @@ Authorization Server Rangiffler: Java 25, Spring Boot 4.1.1, Spring Security 7 +
 ## Проверка результата
 
 ```bash
-
-# оба бэкенда одной командой (нужен org.gradle.parallel=true):
+# MySQL: docker compose up -d
 ./gradlew runAll
 curl -s http://localhost:9001/.well-known/openid-configuration
 ```
@@ -58,4 +57,4 @@ curl -s http://localhost:9001/.well-known/openid-configuration
 | `rfr-gql-client` | React + Apollo (`npm run dev`) | 3001 |
 | `rfr-e2e` | JUnit 6 + Playwright Java + Allure 3 | — |
 
-MySQL: `root` / `secret`, порт 3306. Стенд: JDK 25, Node 22+, Docker. Бэкенды вместе: `./gradlew runAll`.
+MySQL: `root` / `secret`, порт 3306 (`docker compose up -d`). Стенд: JDK 25, Node 22+, Docker. Бэкенды вместе: `./gradlew runAll`. См. `zapusk.md`.

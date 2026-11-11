@@ -53,4 +53,4 @@ description: Создаёт и меняет Page Objects и компоненты
 
 MySQL — порт 3306, пользователь `root`, пароль `secret`.
 
-Стенд: JDK 25, Node 22+, Docker. Не запускай `localenv.sh`: он останавливает и удаляет все Docker-контейнеры машины. Поднимай только MySQL (`docker run --name rfr-mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=secret -d mysql:8.4.7`), затем оба бэкенда (`./gradlew runAll`) и фронт (`npm run dev` в `rfr-gql-client`).
+Стенд: JDK 25, Node 22+, Docker. MySQL: `docker compose up -d` (или `bash localenv.sh` — обёртка над compose с `--wait`). Затем оба бэкенда (`./gradlew runAll`) и фронт (`npm run dev` в `rfr-gql-client`). Подробности — `zapusk.md`.

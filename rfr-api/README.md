@@ -227,8 +227,8 @@ UUID пользователя в `rangiffler-api` и `rangiffler-auth` неза�
 docker compose up -d
 # дождись healthy: docker compose ps
 
-cd rfr-api
-../gradlew bootRun
+./gradlew runAll
+# или только api: ./gradlew :rfr-api:bootRun
 # или main class io.student.rangiffler.RangifflerApiApplication из IDE
 ```
 

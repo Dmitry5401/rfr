@@ -60,4 +60,4 @@ npm run dev   # http://localhost:3001 — нужны rfr-auth :9001 и rfr-api :
 | `rfr-gql-client` | React + Apollo | 3001 |
 | `rfr-e2e` | Playwright / JUnit E2E | — |
 
-Бэкенды вместе: `./gradlew runAll`. Page Objects и локаторы UI для тестов пишет skill `rfr-page-objects` в `rfr-e2e`, не этот skill.
+Бэкенды вместе: `./gradlew runAll`. Стенд целиком — `zapusk.md`. Page Objects и локаторы UI для тестов пишет skill `rfr-page-objects` в `rfr-e2e`, не этот skill.

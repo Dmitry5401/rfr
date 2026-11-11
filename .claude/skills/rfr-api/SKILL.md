@@ -39,7 +39,7 @@ GraphQL API Rangiffler: Java 25, Spring Boot 4.1.1, Spring for GraphQL, DGS Code
 ## Проверка результата
 
 ```bash
-# оба бэкенда одной командой (нужен org.gradle.parallel=true):
+# MySQL: docker compose up -d
 ./gradlew runAll
 curl -s -X POST http://localhost:8081/graphql \
   -H "Content-Type: application/json" \
@@ -58,6 +58,6 @@ curl -s -X POST http://localhost:8081/graphql \
 | `rfr-gql-client` | React + Apollo (`npm run dev`) | 3001 |
 | `rfr-e2e` | JUnit 6 + Playwright Java + Allure 3 | — |
 
-MySQL: `root` / `secret`. Не запускай `localenv.sh` — он останавливает и удаляет все Docker-контейнеры машины. Бэкенды вместе: `./gradlew runAll`.
+MySQL: `root` / `secret` (`docker compose up -d`). Бэкенды вместе: `./gradlew runAll`. См. `zapusk.md`.
 
 Моки должны оставаться в проекте до явного указания на необходимость их замены на реальные реализации.
