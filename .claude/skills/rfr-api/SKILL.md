@@ -5,7 +5,7 @@ description: Создаёт и меняет код модуля rfr-api — Grap
 
 # Модуль rfr-api
 
-GraphQL API: Spring Boot 4.1.1, Spring for GraphQL, DGS Codegen, JWT Resource Server, JPA, Flyway, MySQL (`rangiffler-api`). Порт `8081`, `POST /graphql`. Пакет `io.student.rangiffler`. Стенд — `zapusk.md`.
+GraphQL API: Spring Boot 4.1.1, Spring for GraphQL, DGS Codegen, JWT Resource Server, JPA, Flyway, MySQL (`rangiffler-api`). Порт `8081`, `POST /graphql`. Пакет `io.student.rangiffler`. Общий контекст и стенд — skill `rfr`.
 
 ## Контракт
 
@@ -45,4 +45,4 @@ curl -s -X POST http://localhost:8081/graphql \
   -d '{"query":"{ user { id username location { code } } }"}'
 ```
 
-Стенд — `zapusk.md`. `access_token` из localStorage фронта после логина, не `id_token`. Модели: `./gradlew :rfr-api:generateJava`.
+Стенд — skill `rfr`. `access_token` из localStorage фронта после логина, не `id_token`. Модели: `./gradlew :rfr-api:generateJava`.

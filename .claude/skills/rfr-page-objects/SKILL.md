@@ -7,7 +7,7 @@ description: Создаёт и меняет Page Objects и компоненты
 
 Страницы — `rfr-e2e/src/test/java/io/student/rangiffler/ui/page`, общие части — `ui/component`, адреса — `config/TestConfig`.
 Доступные имена и роли элементов подтверждай в браузере через Playwright MCP (`http://localhost:3001`), не угадывай по исходникам фронта.
-Стенд — `zapusk.md`. Тесты/фикстуры — skill `rfr-e2e`.
+Общий контекст и стенд — skill `rfr`. Тесты/фикстуры — skill `rfr-e2e`.
 
 ## Контракт
 

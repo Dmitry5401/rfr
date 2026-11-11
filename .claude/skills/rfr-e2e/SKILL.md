@@ -5,7 +5,7 @@ description: Создаёт и меняет код модуля rfr-e2e, кро�
 
 # Модуль rfr-e2e
 
-E2E: JUnit 6, Playwright Java (`@UsePlaywright`), Allure 3, `JdbcClient` для фикстур. Source set `src/test`, пакет `io.student.rangiffler`. Стенд — `zapusk.md`. Page Objects — skill `rfr-page-objects`.
+E2E: JUnit 6, Playwright Java (`@UsePlaywright`), Allure 3, `JdbcClient` для фикстур. Source set `src/test`, пакет `io.student.rangiffler`. Общий контекст и стенд — skill `rfr`. Page Objects — skill `rfr-page-objects`.
 
 ## Настройки
 

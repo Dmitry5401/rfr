@@ -5,7 +5,7 @@ description: Создаёт и меняет код React-фронтенда Rang
 
 # Модуль rfr-gql-client
 
-SPA: React 19, TypeScript 6, Vite 8, Apollo Client 4, MUI 9, React Router 8. Порт `3001`. Вне Gradle: `npm ci` / `npm run dev`. Стенд — `zapusk.md`. Page Objects — skill `rfr-page-objects`.
+SPA: React 19, TypeScript 6, Vite 8, Apollo Client 4, MUI 9, React Router 8. Порт `3001`. Вне Gradle: `npm ci` / `npm run dev`. Общий контекст и стенд — skill `rfr`. Page Objects — skill `rfr-page-objects`.
 
 ## Контракт
 
@@ -46,4 +46,4 @@ npm run lint
 npm run build
 ```
 
-`lint` (`--max-warnings 0`) и `build` (`tsc && vite build`) — минимум после правок. Стенд и `npm run dev` — `zapusk.md`.
+`lint` (`--max-warnings 0`) и `build` (`tsc && vite build`) — минимум после правок. Стенд и `npm run dev` — skill `rfr`.

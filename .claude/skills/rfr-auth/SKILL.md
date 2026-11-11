@@ -5,7 +5,7 @@ description: Создаёт и меняет код модуля rfr-auth — Spr
 
 # Модуль rfr-auth
 
-Authorization Server: Spring Boot 4.1.1, Spring Authorization Server, JPA, Flyway, MySQL (`rangiffler-auth`), Thymeleaf. Порт `9001`. Пакет `io.student.rangiffler`. Стенд — `zapusk.md`.
+Authorization Server: Spring Boot 4.1.1, Spring Authorization Server, JPA, Flyway, MySQL (`rangiffler-auth`), Thymeleaf. Порт `9001`. Пакет `io.student.rangiffler`. Общий контекст и стенд — skill `rfr`.
 
 ## Контракт
 
@@ -40,4 +40,4 @@ Authorization Server: Spring Boot 4.1.1, Spring Authorization Server, JPA, Flywa
 curl -s http://localhost:9001/.well-known/openid-configuration
 ```
 
-Стенд поднимай по `zapusk.md`. UI/E2E-сценарий не заменяет проверку OIDC discovery. Revocation/token — запросом к `/oauth2/token` или `/oauth2/revoke` с публичным `client_id`.
+Стенд — skill `rfr`. UI/E2E-сценарий не заменяет проверку OIDC discovery. Revocation/token — запросом к `/oauth2/token` или `/oauth2/revoke` с публичным `client_id`.
