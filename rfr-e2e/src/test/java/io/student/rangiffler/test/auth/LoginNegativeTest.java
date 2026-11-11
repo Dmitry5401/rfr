@@ -44,4 +44,5 @@ class LoginNegativeTest {
             .clickSignInWithInvalidCredentials()
             .checkThatError(BAD_CREDENTIALS);
     }
+
 }
