@@ -12,16 +12,17 @@ jobs:
     name: Backend
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "25"
-          cache: gradle
+
+      - uses: gradle/actions/setup-gradle@v5
 
       - name: Build backends and compile e2e
-        run: ./gradlew --no-daemon :rfr-auth:bootJar :rfr-api:bootJar :rfr-e2e:testClasses
+        run: ./gradlew :rfr-auth:bootJar :rfr-api:bootJar :rfr-e2e:testClasses
 
   frontend:
     name: Frontend
@@ -30,9 +31,9 @@ jobs:
       run:
         working-directory: rfr-gql-client
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: "22"
           cache: npm
