@@ -63,3 +63,16 @@ cd rfr-gql-client && npm ci && npm run dev
 4. Корневой пакет Java: `io.student.rangiffler`. Без лишних комментариев и Javadoc — смысл в именах.
 5. Подробности модуля — в его skill и `*/README.md`; не копируй контракт другого сервиса в свой skill.
 6. Файлы не удаляй (`rm` / Delete). Вместо удаления переименуй в backup: `mv path/to/File.ext path/to/File.ext.bak`. Не затирай существующий `.bak` без явного запроса.
+
+## Agent hooks (compile on edit)
+
+После правок агента в контекст возвращается вывод компиляции/проверки (скрипт `.cursor/hooks/compile-on-edit.sh`):
+
+| Изменение | Команда |
+|---|---|
+| `rfr-auth/**/*.java` | `./gradlew :rfr-auth:compileJava` |
+| `rfr-api/**/*.java` или GraphQL schema | `./gradlew :rfr-api:compileJava` |
+| `rfr-e2e/**/*.java` | `./gradlew :rfr-e2e:compileTestJava` |
+| `rfr-gql-client/src/**/*.{ts,tsx,js,jsx,css}` | `npm run lint` + `tsc --noEmit` |
+
+- Cursor: `.cursor/hooks.json` → `postToolUse` (`Write` / `StrReplace`) → `additional_context`
