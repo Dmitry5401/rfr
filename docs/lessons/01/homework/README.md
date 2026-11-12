@@ -20,7 +20,7 @@
    (cd rfr-gql-client && npm ci && npm run dev)   # http://localhost:3001
    ```
 
-   Кратко те же шаги — в `zapusk.md`.
+   Кратко те же шаги — в `pamiatka.md`.
 
 5. Убедитесь, что тесты работают:
 

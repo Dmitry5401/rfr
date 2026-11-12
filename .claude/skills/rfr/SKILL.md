@@ -36,7 +36,7 @@ docker compose up -d --wait                    # MySQL, ждём healthy
 ./gradlew e2e                                  # всегда гоняет тесты (не UP-TO-DATE)
 ```
 
-Кратко для человека — также `zapusk.md`. По отдельности бэкенды: `./gradlew :rfr-auth:bootRun` и `./gradlew :rfr-api:bootRun`.
+Кратко для человека — также `pamiatka.md` (стенд, порт 3306, git bundle). По отдельности бэкенды: `./gradlew :rfr-auth:bootRun` и `./gradlew :rfr-api:bootRun`.
 
 | URL | Что |
 |---|---|
