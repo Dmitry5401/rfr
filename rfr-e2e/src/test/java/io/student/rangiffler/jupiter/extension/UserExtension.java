@@ -19,9 +19,9 @@ public final class UserExtension implements BeforeEachCallback, ParameterResolve
   public void beforeEach(ExtensionContext context) {
     Parameter[] parameters = context.getRequiredTestMethod().getParameters();
     for (int index = 0; index < parameters.length; index++) {
-      User annotation = parameters[index].getAnnotation(User.class);
-      if (annotation != null) {
-        UserFixture fixture = UserRequest.from(annotation).fixture();
+      User user = parameters[index].getAnnotation(User.class);
+      if (user != null) {
+        UserFixture fixture = UserRequest.from(user).fixture();
         context.getStore(NAMESPACE).put(key(index), fixture);
         fixture.create();
       }
