@@ -12,6 +12,37 @@ cd rfr-gql-client && npm ci && npm run dev   # :3001
 ./gradlew e2e                 # все тесты rfr-e2e
 ```
 
+## Ошибка: порт 3306 занят (`docker compose up -d`)
+
+Если Docker пишет что-то вроде:
+
+```text
+ports are not available: ... bind: Only one usage of each socket address ... 3306
+```
+
+на хосте уже слушает локальный MySQL (`mysqld.exe`). Освободите порт в **PowerShell** (не Git Bash — там `/FI` ломается).
+
+```powershell
+# из корня репо (пример пути)
+cd C:\Users\<user>\Projects\qa_guru_2026_advanced\rfr
+
+# кто держит 3306
+netstat -ano | findstr :3306
+tasklist /FI "PID eq <PID_из_netstat>"
+
+# остановить службу MySQL (часто MySQL80)
+Get-Service *mysql*
+net stop MySQL80
+# или: Stop-Service MySQL80
+
+# порт свободен?
+netstat -ano | findstr :3306
+
+docker compose up -d
+```
+
+Если `net stop` не находит службу — возьмите имя из `Get-Service *mysql*` и остановите его, либо `Stop-Process -Id <PID> -Force`.
+
 ## Остановка
 
 В терминале, где крутится процесс:
