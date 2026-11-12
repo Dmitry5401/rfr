@@ -12,8 +12,8 @@ public record UserRequest(int friends, int incomeInvitations) {
     }
   }
 
-  public static UserRequest from(User annotation) {
-    return new UserRequest(annotation.friends(), annotation.incomeInvitations());
+  public static UserRequest from(User user) {
+    return new UserRequest(user.friends(), user.incomeInvitations());
   }
 
   public UserFixture fixture() {
