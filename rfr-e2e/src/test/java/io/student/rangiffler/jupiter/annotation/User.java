@@ -11,4 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(UserExtension.class)
 public @interface User {
+  int friends() default 0;
+
+  int incomeInvitations() default 0;
 }

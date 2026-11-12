@@ -2,6 +2,7 @@ package io.student.rangiffler.jupiter.extension;
 
 import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.data.UserFixture;
+import io.student.rangiffler.jupiter.UserRequest;
 import io.student.rangiffler.jupiter.annotation.User;
 import java.lang.reflect.Parameter;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -18,8 +19,9 @@ public final class UserExtension implements BeforeEachCallback, ParameterResolve
   public void beforeEach(ExtensionContext context) {
     Parameter[] parameters = context.getRequiredTestMethod().getParameters();
     for (int index = 0; index < parameters.length; index++) {
-      if (parameters[index].isAnnotationPresent(User.class)) {
-        UserFixture fixture = new UserFixture(TestUser.unique());
+      User annotation = parameters[index].getAnnotation(User.class);
+      if (annotation != null) {
+        UserFixture fixture = UserRequest.from(annotation).fixture();
         context.getStore(NAMESPACE).put(key(index), fixture);
         fixture.create();
       }
