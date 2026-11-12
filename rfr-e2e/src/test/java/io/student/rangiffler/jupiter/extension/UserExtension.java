@@ -2,7 +2,7 @@ package io.student.rangiffler.jupiter.extension;
 
 import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.data.UserFixture;
-import io.student.rangiffler.jupiter.UserRequest;
+import io.student.rangiffler.data.UserRequest;
 import io.student.rangiffler.jupiter.annotation.User;
 import java.lang.reflect.Parameter;
 import org.junit.jupiter.api.extension.BeforeEachCallback;

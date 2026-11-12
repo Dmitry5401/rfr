@@ -33,7 +33,7 @@ public final class UserFixture implements AutoCloseable {
     });
     requireOneRow(api.sql(Jdbc.sql("api/create-profile.sql"))
         .param("username", user.username())
-        .update(), "api profile " + user.username());
+        .update(), "Api user profile " + user.username());
   }
 
   @Override

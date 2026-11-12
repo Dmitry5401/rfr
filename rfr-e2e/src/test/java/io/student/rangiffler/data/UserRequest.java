@@ -1,7 +1,5 @@
-package io.student.rangiffler.jupiter;
+package io.student.rangiffler.data;
 
-import io.student.rangiffler.data.TestUser;
-import io.student.rangiffler.data.UserFixture;
 import io.student.rangiffler.jupiter.annotation.User;
 
 public record UserRequest(int friends, int incomeInvitations) {
