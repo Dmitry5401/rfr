@@ -1,17 +1,24 @@
 package io.student.rangiffler.data;
 
-import io.student.rangiffler.data.db.Databases;
-import io.student.rangiffler.data.db.Jdbc;
-import org.springframework.jdbc.core.simple.JdbcClient;
+import io.student.rangiffler.data.db.AuthAccount;
+import io.student.rangiffler.data.db.Friendships;
+import io.student.rangiffler.data.db.Invitations;
+import io.student.rangiffler.data.db.Profile;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 public final class SingleUserFixture implements UserFixture {
   private final TestUser user;
-  private final JdbcClient auth = Jdbc.client(Databases.AUTH);
-  private final JdbcClient api = Jdbc.client(Databases.API);
+  private final AuthAccount authAccount;
+  private final Profile profile;
+  private final Friendships friendships;
+  private final Invitations invitations;
 
   public SingleUserFixture(TestUser user) {
     this.user = user;
+    this.authAccount = new AuthAccount(user.username());
+    this.profile = new Profile(user.username());
+    this.friendships = new Friendships(user.username());
+    this.invitations = new Invitations(user.username());
   }
 
   @Override
@@ -22,49 +29,14 @@ public final class SingleUserFixture implements UserFixture {
   @Override
   public void create() {
     String encoded = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.password());
-    Jdbc.inTransaction(Databases.AUTH, () -> {
-      requireOneRow(auth.sql(Jdbc.sql("auth/create-user.sql"))
-          .param("username", user.username())
-          .param("password", encoded)
-          .update(), "auth user " + user.username());
-      auth.sql(Jdbc.sql("auth/create-authorities.sql"))
-          .param("username", user.username())
-          .update();
-    });
-    requireOneRow(api.sql(Jdbc.sql("api/create-profile.sql"))
-        .param("username", user.username())
-        .update(), "Api user profile " + user.username());
+    authAccount.create(encoded);
+    profile.create();
   }
 
   @Override
   public void close() {
     new TearDown()
-        .with(this::deleteInvitations, this::deleteFriends, this::deleteProfile, this::deleteUser)
+        .with(invitations::delete, friendships::delete, profile::delete, authAccount::delete)
         .run();
-  }
-
-  private void deleteInvitations() {
-    api.sql(Jdbc.sql("api/delete-invitations.sql")).param("username", user.username()).update();
-  }
-
-  private void deleteFriends() {
-    api.sql(Jdbc.sql("api/delete-friends.sql")).param("username", user.username()).update();
-  }
-
-  private void deleteProfile() {
-    api.sql(Jdbc.sql("api/delete-profile.sql")).param("username", user.username()).update();
-  }
-
-  private void deleteUser() {
-    Jdbc.inTransaction(Databases.AUTH, () -> {
-      auth.sql(Jdbc.sql("auth/delete-authorities.sql")).param("username", user.username()).update();
-      auth.sql(Jdbc.sql("auth/delete-user.sql")).param("username", user.username()).update();
-    });
-  }
-
-  private static void requireOneRow(int updated, String what) {
-    if (updated != 1) {
-      throw new IllegalStateException("Expected one inserted row for " + what + ", got " + updated);
-    }
   }
 }
