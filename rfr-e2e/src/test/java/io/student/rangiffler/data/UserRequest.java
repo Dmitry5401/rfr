@@ -17,6 +17,9 @@ public record UserRequest(int friends, int incomeInvitations) {
   }
 
   public UserFixture fixture() {
-    return new SingleUserFixture(TestUser.unique());
+    UserFixture fixture = new SingleUserFixture(TestUser.unique());
+    fixture = new UserWithFriendsFixture(fixture, friends);
+    fixture = new UserWithIncomeInvitationsFixture(fixture, incomeInvitations);
+    return fixture;
   }
 }
