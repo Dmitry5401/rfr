@@ -19,6 +19,13 @@ dependencies {
     compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
     runtimeOnly "mysql:mysql-connector-java:${project.ext.mysqlDriverVersion}"
     runtimeOnly "org.flywaydb:flyway-mysql:${project.ext.flywayVersion}"
+
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 generateJava {
