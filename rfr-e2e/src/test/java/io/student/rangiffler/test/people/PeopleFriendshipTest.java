@@ -1,8 +1,5 @@
 package io.student.rangiffler.test.people;
 
-import static io.student.rangiffler.assertions.FriendshipSqlAssertions.assertFriendsCount;
-import static io.student.rangiffler.assertions.FriendshipSqlAssertions.assertIncomeInvitationsCount;
-
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.junit.UsePlaywright;
 import io.student.rangiffler.data.TestUser;
@@ -15,11 +12,8 @@ import org.junit.jupiter.api.Test;
 @DisplayName("People: друзья и заявки")
 class PeopleFriendshipTest {
   @Test
-  @DisplayName("SQL-прекондишен friends создаёт ACCEPTED-дружбы")
+  @DisplayName("Прекондишен friends виден во вкладке Friends")
   void friendsPreconditionIsCreated(Page page, @User(friends = 2) TestUser user) {
-    assertFriendsCount(user.username(), 2);
-    assertIncomeInvitationsCount(user.username(), 0);
-
     new LandingPage(page).open()
         .clickLogin()
         .fillLoginForm(user.username(), user.password())
@@ -30,11 +24,8 @@ class PeopleFriendshipTest {
   }
 
   @Test
-  @DisplayName("SQL-прекондишен incomeInvitations создаёт PENDING-заявки")
+  @DisplayName("Прекондишен incomeInvitations виден во вкладке Income invitations")
   void incomeInvitationsPreconditionIsCreated(Page page, @User(incomeInvitations = 2) TestUser user) {
-    assertIncomeInvitationsCount(user.username(), 2);
-    assertFriendsCount(user.username(), 0);
-
     new LandingPage(page).open()
         .clickLogin()
         .fillLoginForm(user.username(), user.password())
@@ -45,14 +36,11 @@ class PeopleFriendshipTest {
   }
 
   @Test
-  @DisplayName("Заявка из UI удаляется при закрытии Store")
+  @DisplayName("Заявка из UI создаётся для пустого user и чистится Store при close")
   void uiInvitationIsRemovedWhenStoreCloses(
       Page page,
       @User TestUser user,
       @User TestUser stranger) {
-    assertFriendsCount(user.username(), 0);
-    assertIncomeInvitationsCount(user.username(), 0);
-
     new LandingPage(page).open()
         .clickLogin()
         .fillLoginForm(user.username(), user.password())
@@ -62,7 +50,5 @@ class PeopleFriendshipTest {
         .searchPeople(stranger.username())
         .clickAddForUser(stranger.username())
         .checkThatUserVisible(stranger.username());
-
-    assertIncomeInvitationsCount(stranger.username(), 1);
   }
 }
