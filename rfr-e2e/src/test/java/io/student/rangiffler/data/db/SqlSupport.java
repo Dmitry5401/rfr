@@ -23,13 +23,26 @@ final class SqlSupport {
   static boolean exists(
       JdbcClient client,
       String sqlPath,
-      String firstName,
-      String firstValue,
-      String secondName,
-      String secondValue) {
+      String profileId,
+      FriendshipStatus status) {
     Integer count = client.sql(Jdbc.sql(sqlPath))
-        .param(firstName, firstValue)
-        .param(secondName, secondValue)
+        .param("profileId", profileId)
+        .param("status", status.name())
+        .query(Integer.class)
+        .single();
+    return count != null && count > 0;
+  }
+
+  static boolean exists(
+      JdbcClient client,
+      String sqlPath,
+      String requester,
+      String addressee,
+      FriendshipStatus status) {
+    Integer count = client.sql(Jdbc.sql(sqlPath))
+        .param("requester", requester)
+        .param("addressee", addressee)
+        .param("status", status.name())
         .query(Integer.class)
         .single();
     return count != null && count > 0;

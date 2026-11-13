@@ -1,19 +1,34 @@
 package io.student.rangiffler.data.db;
 
+import java.util.List;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
-public record Friendships(String username) {
+public record Friendships(Profile profile, List<Friendship> items) implements DbEntity {
   private static final JdbcClient API = Jdbc.client(Databases.API);
 
-  public void create(String friendUsername) {
-    new Friendship(username, friendUsername).create();
+  public Friendships(Profile profile) {
+    this(profile, List.of());
   }
 
+  @Override
+  public void create() {
+    items.forEach(Friendship::create);
+  }
+
+  @Override
   public void delete() {
-    API.sql(Jdbc.sql("api/delete-friends.sql")).param("username", username).update();
+    API.sql(Jdbc.sql("api/delete-friendships-by-profile.sql"))
+        .param("profileId", profile.id())
+        .param("status", FriendshipStatus.ACCEPTED.name())
+        .update();
   }
 
+  @Override
   public boolean exists() {
-    return SqlSupport.exists(API, "api/exist-friends.sql", "username", username);
+    return SqlSupport.exists(
+        API,
+        "api/exist-friendships-by-profile.sql",
+        profile.id(),
+        FriendshipStatus.ACCEPTED);
   }
 }

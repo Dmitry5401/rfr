@@ -15,10 +15,12 @@ public final class SingleUserFixture implements UserFixture {
 
   public SingleUserFixture(TestUser user) {
     this.user = user;
-    this.authAccount = new AuthAccount(user.username());
+    this.authAccount = new AuthAccount(
+        user.username(),
+        PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.password()));
     this.profile = new Profile(user.username());
-    this.friendships = new Friendships(user.username());
-    this.invitations = new Invitations(user.username());
+    this.friendships = new Friendships(profile);
+    this.invitations = new Invitations(profile);
   }
 
   @Override
@@ -28,8 +30,7 @@ public final class SingleUserFixture implements UserFixture {
 
   @Override
   public void create() {
-    String encoded = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.password());
-    authAccount.create(encoded);
+    authAccount.create();
     profile.create();
   }
 

@@ -1,6 +1,9 @@
 package io.student.rangiffler.data;
 
+import io.student.rangiffler.data.db.Friendship;
+import io.student.rangiffler.data.db.FriendshipStatus;
 import io.student.rangiffler.data.db.Invitations;
+import io.student.rangiffler.data.db.Profile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,19 +25,24 @@ public final class UserWithIncomeInvitationsFixture implements UserFixture {
   @Override
   public void create() {
     delegate.create();
-    Invitations invitations = new Invitations(user().username());
+    Profile me = new Profile(user().username());
+    List<Friendship> links = new ArrayList<>();
     for (int i = 0; i < invitationsCount; i++) {
       UserFixture requester = new SingleUserFixture(TestUser.unique());
       requester.create();
       requesters.add(requester);
-      invitations.create(requester.user().username());
+      links.add(new Friendship(
+          new Profile(requester.user().username()),
+          me,
+          FriendshipStatus.PENDING));
     }
+    new Invitations(me, List.copyOf(links)).create();
   }
 
   @Override
   public void close() {
     new TearDown()
-        .with(new Invitations(user().username())::delete)
+        .with(new Invitations(new Profile(user().username()))::delete)
         .withEach(requesters, UserFixture::close)
         .with(delegate::close)
         .run();
