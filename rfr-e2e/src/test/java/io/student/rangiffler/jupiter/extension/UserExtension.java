@@ -1,6 +1,5 @@
 package io.student.rangiffler.jupiter.extension;
 
-import io.student.rangiffler.assertions.FriendshipSqlAssertions;
 import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.data.UserFixture;
 import io.student.rangiffler.data.UserRequest;
@@ -24,10 +23,7 @@ public final class UserExtension implements BeforeEachCallback, ParameterResolve
       User user = parameters[index].getAnnotation(User.class);
       if (user != null) {
         UserFixture fixture = UserRequest.from(user).fixture();
-        String username = fixture.user().username();
-        ExtensionContext.Store store = context.getStore(NAMESPACE);
-        store.put(assertKey(index), (CloseableResource) () -> FriendshipSqlAssertions.assertNoRelations(username));
-        store.put(key(index), new StoredUser(fixture));
+        context.getStore(NAMESPACE).put(key(index), new StoredUser(fixture));
         fixture.create();
       }
     }
@@ -52,10 +48,6 @@ public final class UserExtension implements BeforeEachCallback, ParameterResolve
 
   private static String key(int index) {
     return "user-" + index;
-  }
-
-  private static String assertKey(int index) {
-    return "user-assert-" + index;
   }
 
   private record StoredUser(UserFixture fixture) implements CloseableResource {

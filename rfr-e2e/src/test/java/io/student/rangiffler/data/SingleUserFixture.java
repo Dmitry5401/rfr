@@ -2,8 +2,6 @@ package io.student.rangiffler.data;
 
 import io.student.rangiffler.data.db.Databases;
 import io.student.rangiffler.data.db.Jdbc;
-import java.util.ArrayList;
-import java.util.List;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
@@ -40,24 +38,9 @@ public final class SingleUserFixture implements UserFixture {
 
   @Override
   public void close() {
-    List<Runnable> steps = List.of(
-        this::deleteInvitations,
-        this::deleteFriends,
-        this::deleteProfile,
-        this::deleteUser);
-    List<RuntimeException> failures = new ArrayList<>();
-    for (Runnable step : steps) {
-      try {
-        step.run();
-      } catch (RuntimeException failure) {
-        failures.add(failure);
-      }
-    }
-    if (!failures.isEmpty()) {
-      RuntimeException first = failures.getFirst();
-      failures.stream().skip(1).forEach(first::addSuppressed);
-      throw first;
-    }
+    new TearDown()
+        .with(this::deleteInvitations, this::deleteFriends, this::deleteProfile, this::deleteUser)
+        .run();
   }
 
   private void deleteInvitations() {

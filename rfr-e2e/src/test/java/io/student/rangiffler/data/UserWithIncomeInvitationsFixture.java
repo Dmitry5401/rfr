@@ -38,33 +38,15 @@ public final class UserWithIncomeInvitationsFixture implements UserFixture {
 
   @Override
   public void close() {
-    List<Runnable> steps = new ArrayList<>();
-    steps.add(this::deleteInvitations);
-    for (UserFixture requester : requesters) {
-      steps.add(requester::close);
-    }
-    steps.add(delegate::close);
-    runAll(steps);
+    new TearDown()
+        .with(this::deleteInvitations)
+        .withEach(requesters, UserFixture::close)
+        .with(delegate::close)
+        .run();
   }
 
   private void deleteInvitations() {
     api.sql(Jdbc.sql("api/delete-invitations.sql")).param("username", user().username()).update();
-  }
-
-  private static void runAll(List<Runnable> steps) {
-    List<RuntimeException> failures = new ArrayList<>();
-    for (Runnable step : steps) {
-      try {
-        step.run();
-      } catch (RuntimeException failure) {
-        failures.add(failure);
-      }
-    }
-    if (!failures.isEmpty()) {
-      RuntimeException first = failures.getFirst();
-      failures.stream().skip(1).forEach(first::addSuppressed);
-      throw first;
-    }
   }
 
   private static void requireOneRow(int updated, String what) {
