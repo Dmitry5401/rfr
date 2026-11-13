@@ -1,7 +1,5 @@
 package io.student.rangiffler.service.impl;
 
-import io.student.rangiffler.data.Authority;
-import io.student.rangiffler.data.AuthorityEntity;
 import io.student.rangiffler.data.UserEntity;
 import io.student.rangiffler.data.repository.UserRepository;
 import io.student.rangiffler.service.api.UserService;
@@ -30,20 +28,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public String registerUser(String username, String password) {
-    UserEntity userEntity = new UserEntity();
-    userEntity.setEnabled(true);
-    userEntity.setAccountNonExpired(true);
-    userEntity.setCredentialsNonExpired(true);
-    userEntity.setAccountNonLocked(true);
-    userEntity.setUsername(username);
-    userEntity.setPassword(passwordEncoder.encode(password));
-
-    AuthorityEntity readAuthorityEntity = new AuthorityEntity();
-    readAuthorityEntity.setAuthority(Authority.read);
-    AuthorityEntity writeAuthorityEntity = new AuthorityEntity();
-    writeAuthorityEntity.setAuthority(Authority.write);
-
-    userEntity.addAuthorities(readAuthorityEntity, writeAuthorityEntity);
+    UserEntity userEntity = UserEntity.register(username, passwordEncoder.encode(password));
     return userRepository.save(userEntity).getUsername();
   }
 }
