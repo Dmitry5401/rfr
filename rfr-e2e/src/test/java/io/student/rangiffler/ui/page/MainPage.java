@@ -43,6 +43,11 @@ public final class MainPage {
     return this;
   }
 
+  @Step("Открыть People")
+  public PeoplePage clickPeople() {
+    return header.clickPeople();
+  }
+
   @Step("Открыть профиль")
   public ProfilePage clickProfile() {
     return header.clickProfile();

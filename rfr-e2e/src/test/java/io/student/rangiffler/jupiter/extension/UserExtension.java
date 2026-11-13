@@ -1,5 +1,6 @@
 package io.student.rangiffler.jupiter.extension;
 
+import io.student.rangiffler.assertions.FriendshipSqlAssertions;
 import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.data.UserFixture;
 import io.student.rangiffler.data.UserRequest;
@@ -7,6 +8,7 @@ import io.student.rangiffler.jupiter.annotation.User;
 import java.lang.reflect.Parameter;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
@@ -22,7 +24,10 @@ public final class UserExtension implements BeforeEachCallback, ParameterResolve
       User user = parameters[index].getAnnotation(User.class);
       if (user != null) {
         UserFixture fixture = UserRequest.from(user).fixture();
-        context.getStore(NAMESPACE).put(key(index), fixture);
+        String username = fixture.user().username();
+        ExtensionContext.Store store = context.getStore(NAMESPACE);
+        store.put(assertKey(index), (CloseableResource) () -> FriendshipSqlAssertions.assertNoRelations(username));
+        store.put(key(index), new StoredUser(fixture));
         fixture.create();
       }
     }
@@ -37,15 +42,26 @@ public final class UserExtension implements BeforeEachCallback, ParameterResolve
 
   @Override
   public TestUser resolveParameter(ParameterContext parameter, ExtensionContext context) {
-    UserFixture fixture = context.getStore(NAMESPACE).get(key(parameter.getIndex()), UserFixture.class);
-    if (fixture == null) {
+    StoredUser stored = context.getStore(NAMESPACE).get(key(parameter.getIndex()), StoredUser.class);
+    if (stored == null) {
       throw new ParameterResolutionException(
           "No user was created for parameter " + parameter.getIndex() + " of " + context.getRequiredTestMethod());
     }
-    return fixture.user();
+    return stored.fixture().user();
   }
 
   private static String key(int index) {
     return "user-" + index;
+  }
+
+  private static String assertKey(int index) {
+    return "user-assert-" + index;
+  }
+
+  private record StoredUser(UserFixture fixture) implements CloseableResource {
+    @Override
+    public void close() {
+      fixture.close();
+    }
   }
 }

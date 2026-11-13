@@ -40,7 +40,11 @@ public final class SingleUserFixture implements UserFixture {
 
   @Override
   public void close() {
-    List<Runnable> steps = List.of(this::deleteProfile, this::deleteUser);
+    List<Runnable> steps = List.of(
+        this::deleteInvitations,
+        this::deleteFriends,
+        this::deleteProfile,
+        this::deleteUser);
     List<RuntimeException> failures = new ArrayList<>();
     for (Runnable step : steps) {
       try {
@@ -54,6 +58,14 @@ public final class SingleUserFixture implements UserFixture {
       failures.stream().skip(1).forEach(first::addSuppressed);
       throw first;
     }
+  }
+
+  private void deleteInvitations() {
+    api.sql(Jdbc.sql("api/delete-invitations.sql")).param("username", user.username()).update();
+  }
+
+  private void deleteFriends() {
+    api.sql(Jdbc.sql("api/delete-friends.sql")).param("username", user.username()).update();
   }
 
   private void deleteProfile() {
