@@ -19,7 +19,7 @@ public final class UserWithIncomeInvitationsFixture implements UserFixture {
 
   @Override
   public TestUser user() {
-    return delegate.user();
+    return delegate.user().withIncomeInvitations(requesters.stream().map(UserFixture::user).toList());
   }
 
   @Override
