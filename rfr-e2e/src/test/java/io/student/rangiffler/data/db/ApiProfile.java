@@ -2,7 +2,7 @@ package io.student.rangiffler.data.db;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
 
-public record Profile(String username) implements DbEntity {
+public record ApiProfile(String username) implements DbEntity {
   private static final JdbcClient API = Jdbc.client(Databases.API);
 
   @Override

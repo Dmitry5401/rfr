@@ -4,7 +4,7 @@ import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.data.db.AuthAccount;
 import io.student.rangiffler.data.db.Friendship;
 import io.student.rangiffler.data.db.FriendshipStatus;
-import io.student.rangiffler.data.db.Profile;
+import io.student.rangiffler.data.db.ApiProfile;
 import io.student.rangiffler.jupiter.annotation.ProbeTarget;
 import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.jupiter.condition.ProbeTargetCondition;
@@ -66,9 +66,9 @@ class UserExtensionTest {
     Map<String, String> entries = runAndReturnEntries(Observed.class);
 
     assertFalse(account(entries.get("username")).exists(), "Account was not removed after the test");
-    assertFalse(new Profile(entries.get("username")).exists(), "Profile was not removed after the test");
-    assertFalse(new Profile(entries.get("friend")).exists(), "Friend profile was not removed after the test");
-    assertFalse(new Profile(entries.get("inviter")).exists(), "Inviter profile was not removed after the test");
+    assertFalse(new ApiProfile(entries.get("username")).exists(), "Profile was not removed after the test");
+    assertFalse(new ApiProfile(entries.get("friend")).exists(), "Friend profile was not removed after the test");
+    assertFalse(new ApiProfile(entries.get("inviter")).exists(), "Inviter profile was not removed after the test");
   }
 
   @Test
@@ -79,7 +79,7 @@ class UserExtensionTest {
 
     assertEquals(1, results.testEvents().failed().count(), "Failing probe did not fail");
     assertFalse(entries.get("username").isBlank(), "TestReporter did not record the resolved user");
-    assertFalse(new Profile(entries.get("username")).exists(), "Profile was not removed after the failed test");
+    assertFalse(new ApiProfile(entries.get("username")).exists(), "Profile was not removed after the failed test");
     assertFalse(account(entries.get("username")).exists(), "Account was not removed after the failed test");
   }
 
@@ -92,8 +92,8 @@ class UserExtensionTest {
     assertNotEquals(entries.get("first"), entries.get("second"), "Two @User parameters got the same user");
     assertEquals("true", entries.get("firstAccount"));
     assertEquals("true", entries.get("secondAccount"));
-    assertFalse(new Profile(entries.get("first")).exists(), "First user was not removed");
-    assertFalse(new Profile(entries.get("second")).exists(), "Second user was not removed");
+    assertFalse(new ApiProfile(entries.get("first")).exists(), "First user was not removed");
+    assertFalse(new ApiProfile(entries.get("second")).exists(), "Second user was not removed");
   }
 
   @Test
@@ -183,14 +183,14 @@ class UserExtensionTest {
           "friends", String.valueOf(user.friends().size()),
           "incomeInvitations", String.valueOf(user.incomeInvitations().size()),
           "account", String.valueOf(new AuthAccount(user.username(), user.password()).exists()),
-          "profile", String.valueOf(new Profile(user.username()).exists()),
+          "profile", String.valueOf(new ApiProfile(user.username()).exists()),
           "friendship", String.valueOf(new Friendship(
-              new Profile(user.username()),
-              new Profile(friend.username()),
+              new ApiProfile(user.username()),
+              new ApiProfile(friend.username()),
               FriendshipStatus.ACCEPTED).exists()),
           "invitation", String.valueOf(new Friendship(
-              new Profile(inviter.username()),
-              new Profile(user.username()),
+              new ApiProfile(inviter.username()),
+              new ApiProfile(user.username()),
               FriendshipStatus.PENDING).exists())));
     }
   }

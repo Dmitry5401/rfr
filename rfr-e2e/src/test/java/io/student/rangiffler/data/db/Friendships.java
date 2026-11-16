@@ -3,10 +3,10 @@ package io.student.rangiffler.data.db;
 import java.util.List;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
-public record Friendships(Profile profile, List<Friendship> items) implements DbEntity {
+public record Friendships(ApiProfile profile, List<Friendship> items) implements DbEntity {
   private static final JdbcClient API = Jdbc.client(Databases.API);
 
-  public Friendships(Profile profile) {
+  public Friendships(ApiProfile profile) {
     this(profile, List.of());
   }
 

@@ -50,7 +50,9 @@ UI-тестам нужен стенд: MySQL `:3306`, `rfr-auth :9001`, `rfr-api
 
 ## Пробы UserExtension
 
-Класс `io.student.rangiffler.jupiter.probe.UserExtensionTest`, тег `engine-probe`. `EngineTestKit` поднимает отдельный прогон вложенного класса с `@ProbeTarget`. Тело пробы пишет в `TestReporter`, что расширение положило в параметр. Внешний тест читает эти записи и сверяет их с базой уже после того, как Store закрыл фикстуру.
+Класс `io.student.rangiffler.jupiter.probe.UserExtensionTest`, тег `engine-probe`. `EngineTestKit` поднимает отдельный
+прогон вложенного класса с `@ProbeTarget`. Тело пробы пишет в `TestReporter`, что расширение положило в параметр.
+Внешний тест читает эти записи и сверяет их с базой уже после того, как Store закрыл фикстуру.
 
 ```bash
 ./gradlew :rfr-e2e:test --tests io.student.rangiffler.jupiter.probe.UserExtensionTest
@@ -64,7 +66,8 @@ docker compose ps          # у mysql статус healthy
 ./gradlew runAll           # после Started у обоих сервисов процесс можно остановить
 ```
 
-Дальше сервисы можно остановить: пробы ходят в базу сами через `JdbcClient`. Фронт и `installPlaywright` для них не нужны. `./gradlew e2e` запускает эти 9 тестов вместе с UI-тестами, поэтому без мигрированной базы упадут и они.
+Дальше сервисы можно остановить: пробы ходят в базу сами через `JdbcClient`. Фронт и `installPlaywright` для них не
+нужны. `./gradlew e2e` запускает эти 9 тестов вместе с UI-тестами, поэтому без мигрированной базы упадут и они.
 
 Проверяется следующее:
 

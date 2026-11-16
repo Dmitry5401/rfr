@@ -2,7 +2,7 @@ package io.student.rangiffler.data.db;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
 
-public record Friendship(Profile requester, Profile addressee, FriendshipStatus status) implements DbEntity {
+public record Friendship(ApiProfile requester, ApiProfile addressee, FriendshipStatus status) implements DbEntity {
   private static final JdbcClient API = Jdbc.client(Databases.API);
 
   @Override
