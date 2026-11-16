@@ -1,5 +1,5 @@
 ---
-name: rfr-e2e-resources
+name: rfr-test-review
 description: Ревью тестового кода rfr-e2e на владение ресурсами. Применять к diff'ам в jupiter/ и data/, новым предусловиям @User и декораторам UserFixture, разбору падений с подозрением на утечку данных или общее состояние.
 ---
 
