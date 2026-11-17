@@ -100,6 +100,31 @@ class UserExtensionTest {
   }
 
   @Test
+  @DisplayName("outcomeInvitations = 1: во время теста PENDING, после теста нет ни связи, ни профиля приглашённого")
+  void outcomeInvitationExistsDuringTestAndIsRemovedAfter() {
+    EngineExecutionResults results = run(OutcomeInvitation.class);
+    Map<String, String> entries = entriesOf(results);
+
+    assertEquals(1, results.testEvents().succeeded().count(), "Outcome invitation probe did not succeed");
+    assertEquals("true", entries.get("outcomeInvitation"), "Outgoing invitation did not exist during the test");
+    assertFalse(new Friendship(
+        new ApiProfile(entries.get("username")),
+        new ApiProfile(entries.get("invitee")),
+        FriendshipStatus.PENDING).exists(), "Outgoing invitation was not removed after the test");
+    assertFalse(new ApiProfile(entries.get("invitee")).exists(), "Invitee profile was not removed after the test");
+  }
+
+  @Test
+  @DisplayName("outcomeInvitations = -1 валит тест до создания пользователя")
+  void negativeOutcomeInvitationsFailBeforeUserIsCreated() {
+    EngineExecutionResults results = run(NegativeOutcomeInvitations.class);
+
+    assertInstanceOf(IllegalArgumentException.class, failure(results, IllegalArgumentException.class),
+        "Negative outcomeInvitations did not fail the test with IllegalArgumentException");
+    assertTrue(entriesOf(results).isEmpty(), "Test body ran after an invalid outcomeInvitations");
+  }
+
+  @Test
   @DisplayName("Отрицательное число друзей валит тест до тела и до репорта")
   void negativeFriendsFailBeforeTheTestBody() {
     EngineExecutionResults results = run(NegativeFriends.class);
@@ -224,6 +249,29 @@ class UserExtensionTest {
           "second", second.username(),
           "firstAccount", String.valueOf(new AuthAccount(first.username(), first.password()).exists()),
           "secondAccount", String.valueOf(new AuthAccount(second.username(), second.password()).exists())));
+    }
+  }
+
+  @ProbeTarget
+  static final class OutcomeInvitation {
+    @Test
+    void observe(TestReporter reporter, @User(outcomeInvitations = 1) TestUser user) {
+      TestUser invitee = user.outcomeInvitations().getFirst();
+      reporter.publishEntry(Map.of(
+          "username", user.username(),
+          "invitee", invitee.username(),
+          "outcomeInvitation", String.valueOf(new Friendship(
+              new ApiProfile(user.username()),
+              new ApiProfile(invitee.username()),
+              FriendshipStatus.PENDING).exists())));
+    }
+  }
+
+  @ProbeTarget
+  static final class NegativeOutcomeInvitations {
+    @Test
+    void observe(TestReporter reporter, @User(outcomeInvitations = -1) TestUser user) {
+      reporter.publishEntry("username", user.username());
     }
   }
 
