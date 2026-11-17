@@ -40,6 +40,7 @@ class UserExtensionTest {
     assertEquals(1, results.testEvents().succeeded().count(), "Test with @User did not succeed");
     assertEquals("1", entriesOf(results).get("friends"));
     assertEquals("1", entriesOf(results).get("incomeInvitations"));
+    assertEquals("1", entriesOf(results).get("outcomeInvitations"));
   }
 
   @Test
@@ -58,10 +59,11 @@ class UserExtensionTest {
 
     assertEquals("true", entries.get("friendship"), "Accepted friendship did not exist during the test");
     assertEquals("true", entries.get("invitation"), "Pending invitation did not exist during the test");
+    assertEquals("true", entries.get("outcomeInvitation"), "Outgoing invitation did not exist during the test");
   }
 
   @Test
-  @DisplayName("После теста Store закрывает пользователя, друга и пригласившего")
+  @DisplayName("После теста Store закрывает пользователя, друга, пригласившего и приглашённого")
   void storeClosesFixtureAfterTest() {
     Map<String, String> entries = runAndReturnEntries(Observed.class);
 
@@ -69,6 +71,7 @@ class UserExtensionTest {
     assertFalse(new ApiProfile(entries.get("username")).exists(), "Profile was not removed after the test");
     assertFalse(new ApiProfile(entries.get("friend")).exists(), "Friend profile was not removed after the test");
     assertFalse(new ApiProfile(entries.get("inviter")).exists(), "Inviter profile was not removed after the test");
+    assertFalse(new ApiProfile(entries.get("invitee")).exists(), "Invitee profile was not removed after the test");
   }
 
   @Test
@@ -173,15 +176,19 @@ class UserExtensionTest {
   @ProbeTarget
   static final class Observed {
     @Test
-    void observe(TestReporter reporter, @User(friends = 1, incomeInvitations = 1) TestUser user) {
+    void observe(TestReporter reporter, @User(friends = 1, incomeInvitations = 1, outcomeInvitations = 1) TestUser user) {
       TestUser friend = user.friends().getFirst();
       TestUser inviter = user.incomeInvitations().getFirst();
+      TestUser invitee = user.outcomeInvitations().getFirst();
       reporter.publishEntry(Map.of(
           "username", user.username(),
           "friend", friend.username(),
           "inviter", inviter.username(),
+          "invitee", invitee.username(),
           "friends", String.valueOf(user.friends().size()),
           "incomeInvitations", String.valueOf(user.incomeInvitations().size()),
+          "outcomeInvitations", String.valueOf(user.outcomeInvitations().size())));
+      reporter.publishEntry(Map.of(
           "account", String.valueOf(new AuthAccount(user.username(), user.password()).exists()),
           "profile", String.valueOf(new ApiProfile(user.username()).exists()),
           "friendship", String.valueOf(new Friendship(
@@ -191,6 +198,10 @@ class UserExtensionTest {
           "invitation", String.valueOf(new Friendship(
               new ApiProfile(inviter.username()),
               new ApiProfile(user.username()),
+              FriendshipStatus.PENDING).exists()),
+          "outcomeInvitation", String.valueOf(new Friendship(
+              new ApiProfile(user.username()),
+              new ApiProfile(invitee.username()),
               FriendshipStatus.PENDING).exists())));
     }
   }
