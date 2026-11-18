@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("@ExtendWith")
-class DemoTest {
+class ExtendsWithPiacesTest {
 
   @Nested
   @ExtendWith(DemoExtension.class)
