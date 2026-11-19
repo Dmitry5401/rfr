@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class SuiteRun {
+public class SuiteRun implements AutoCloseable {
     private final SuiteExtension extension;
     private final ExtensionContext context;
     private final AtomicBoolean started;
