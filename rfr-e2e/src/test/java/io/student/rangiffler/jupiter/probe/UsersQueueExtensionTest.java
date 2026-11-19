@@ -11,6 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.platform.engine.reporting.ReportEntry;
 import org.junit.platform.testkit.engine.EngineExecutionResults;
 import org.junit.platform.testkit.engine.EngineTestKit;
@@ -20,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
 @Tag("engine-probe")
+@Execution(ExecutionMode.SAME_THREAD)
 @DisplayName("UsersQueueExtension")
 class UsersQueueExtensionTest {
 
@@ -46,6 +49,7 @@ class UsersQueueExtensionTest {
 
   private EngineExecutionResults run(Class<?> target) {
     return EngineTestKit.engine("junit-jupiter")
+        .enableImplicitConfigurationParameters(true)
         .configurationParameter(ProbeTargetCondition.PARAMETER, "true")
         .selectors(selectClass(target))
         .execute();
