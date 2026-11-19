@@ -2,6 +2,7 @@ package io.student.rangiffler.test.demo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.AfterClassTemplateInvocationCallback;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -33,73 +34,76 @@ public final class DemoExtension implements
     PreInterruptCallback,
     ParameterResolver {
 
-  private static final List<String> CALLBACKS = new ArrayList<>();
-
-  public static List<String> callbacks() {
-    synchronized (CALLBACKS) {
-      return List.copyOf(CALLBACKS);
-    }
+  public record Trace(int id, String place, String callback) {
   }
 
-  public static void clear() {
-    synchronized (CALLBACKS) {
-      CALLBACKS.clear();
+  private static final AtomicInteger NEXT_ID = new AtomicInteger();
+  private static final List<Trace> TRACE = new ArrayList<>();
+  private final int id = NEXT_ID.incrementAndGet();
+
+  public DemoExtension() {
+    System.out.println("DemoExtension#" + id + " created");
+  }
+
+  public static List<Trace> trace() {
+    synchronized (TRACE) {
+      return List.copyOf(TRACE);
     }
   }
 
   @Override
   public void beforeAll(ExtensionContext context) {
-    trace(context, "beforeAll");
+    log("beforeAll", context);
   }
 
   @Override
   public void afterAll(ExtensionContext context) {
-    trace(context, "afterAll");
+    log("afterAll", context);
   }
 
   @Override
   public void beforeEach(ExtensionContext context) {
-    trace(context, "beforeEach");
+    log("beforeEach", context);
   }
 
   @Override
   public void afterEach(ExtensionContext context) {
-    trace(context, "afterEach");
+    log("afterEach", context);
   }
 
   @Override
   public void beforeTestExecution(ExtensionContext context) {
-    trace(context, "beforeTestExecution");
+    log("beforeTestExecution", context);
   }
 
   @Override
   public void afterTestExecution(ExtensionContext context) {
-    trace(context, "afterTestExecution");
+    log("afterTestExecution", context);
   }
 
   @Override
   public void preConstructTestInstance(TestInstanceFactoryContext factoryContext, ExtensionContext context) {
-    trace(context, "preConstructTestInstance");
+    log("preConstructTestInstance", context);
   }
 
   @Override
   public void preDestroyTestInstance(ExtensionContext context) {
-    trace(context, "preDestroyTestInstance");
+    log("preDestroyTestInstance", context);
   }
 
   @Override
   public void beforeClassTemplateInvocation(ExtensionContext context) {
-    trace(context, "beforeClassTemplateInvocation");
+    log("beforeClassTemplateInvocation", context);
   }
 
   @Override
   public void afterClassTemplateInvocation(ExtensionContext context) {
-    trace(context, "afterClassTemplateInvocation");
+    log("afterClassTemplateInvocation", context);
   }
 
   @Override
   public void beforeThreadInterrupt(PreInterruptContext preInterruptContext, ExtensionContext context) {
-    trace(context, "beforeThreadInterrupt");
+    log("beforeThreadInterrupt", context);
   }
 
   @Override
@@ -109,15 +113,34 @@ public final class DemoExtension implements
 
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-    trace(extensionContext, "resolveParameter");
-    return new DemoToken(extensionContext.getDisplayName());
+    String parameter = parameterContext.getDeclaringExecutable().getName() + "#" + parameterContext.getIndex();
+    log("resolveParameter", extensionContext, parameter);
+    return new DemoToken("#" + id);
   }
 
-  private static void trace(ExtensionContext context, String callback) {
-    String line = context.getDisplayName() + ":" + callback;
-    synchronized (CALLBACKS) {
-      CALLBACKS.add(line);
+  private void log(String callback, ExtensionContext context) {
+    log(callback, context, "");
+  }
+
+  private void log(String callback, ExtensionContext context, String detail) {
+    log(callback, place(context), detail);
+  }
+
+  private void log(String callback, String place, String detail) {
+    synchronized (TRACE) {
+      TRACE.add(new Trace(id, place, callback));
     }
-    context.publishReportEntry("callback", line);
+    String line = "DemoExtension#" + id + " " + callback;
+    if (!detail.isEmpty()) {
+      line += " " + detail;
+    }
+    System.out.println(line);
+  }
+
+  private static String place(ExtensionContext context) {
+    String current = context.getDisplayName();
+    return context.getParent()
+        .map(parent -> parent.getDisplayName() + " / " + current)
+        .orElse(current);
   }
 }
