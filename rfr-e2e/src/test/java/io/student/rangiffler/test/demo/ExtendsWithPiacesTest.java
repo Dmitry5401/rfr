@@ -1,5 +1,9 @@
 package io.student.rangiffler.test.demo;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -38,7 +42,7 @@ class ExtendsWithPiacesTest {
     INSTANCES.put("на параметре @AfterEach", 1);
     INSTANCES.put("на параметре @BeforeAll", 1);
     INSTANCES.put("на параметре @AfterAll", 1);
-    INSTANCES.put("на составной аннотации", 0);
+    INSTANCES.put("на составной аннотации", 1);
     INSTANCES.put("на методе @BeforeEach", 0);
     INSTANCES.put("на методе @AfterEach", 0);
     INSTANCES.put("на методе @BeforeAll", 0);
@@ -293,14 +297,14 @@ class ExtendsWithPiacesTest {
 
     @Test
     @DisplayName("первый")
-    void first() {
-      assertNotRegistered("на составной аннотации");
+    void first(DemoToken token) {
+      assertFalse(token.source().isBlank());
     }
 
     @Test
     @DisplayName("второй")
-    void second() {
-      assertNotRegistered("на составной аннотации");
+    void second(DemoToken token) {
+      assertFalse(token.source().isBlank());
     }
   }
 
@@ -469,6 +473,8 @@ abstract class ExtensionDeclaredOnSuperclass extends DemoCase {
 interface ExtensionDeclaredOnInterface {
 }
 
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
 @ExtendWith(DemoExtension.class)
 @interface WithDemoExtension {
 }
