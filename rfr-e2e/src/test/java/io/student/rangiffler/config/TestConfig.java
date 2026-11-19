@@ -1,5 +1,7 @@
 package io.student.rangiffler.config;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Locale;
 
 public final class TestConfig {
@@ -36,6 +38,26 @@ public final class TestConfig {
 
   public static boolean headless() {
     return Boolean.parseBoolean(value("headless", "true"));
+  }
+
+  public static boolean validateMigrations() {
+    return Boolean.parseBoolean(value("validateMigrations", "false"));
+  }
+
+  public static Path repositoryRoot() {
+    String configured = value("repoRoot", "");
+    if (!configured.isEmpty()) {
+      return Path.of(configured).toAbsolutePath().normalize();
+    }
+    Path dir = Path.of("").toAbsolutePath();
+    while (dir != null) {
+      if (Files.isDirectory(dir.resolve("rfr-auth")) && Files.isDirectory(dir.resolve("rfr-api"))) {
+        return dir;
+      }
+      dir = dir.getParent();
+    }
+    throw new IllegalStateException(
+        "Не найден корень репозитория с rfr-auth и rfr-api. Запустите ./gradlew e2e из корня проекта или передайте -Drfr.repoRoot.");
   }
 
   static String value(String key, String fallback) {
