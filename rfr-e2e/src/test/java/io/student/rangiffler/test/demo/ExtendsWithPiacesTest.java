@@ -24,13 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("@ExtendWith")
+@DisplayName("Места установки @ExtendWith")
 class ExtendsWithPiacesTest {
 
   private static final Map<String, Integer> INSTANCES = new LinkedHashMap<>();
 
   static {
-    INSTANCES.put("на классе", 1);
+    INSTANCES.put("На классе", 1);
     INSTANCES.put("на методе", 2);
     INSTANCES.put("на статическом поле", 1);
     INSTANCES.put("на поле экземпляра", 1);
@@ -51,18 +51,18 @@ class ExtendsWithPiacesTest {
 
   @Nested
   @ExtendWith(DemoExtension.class)
-  @DisplayName("на классе")
+  @DisplayName("На классе")
   class OnClass extends DemoCase {
 
     @Test
-    @DisplayName("первый")
-    void first(DemoToken token) {
+    @DisplayName("Первый тест получает параметр от расширения класса")
+    void firstTestResolvesParameter(DemoToken token) {
       assertFalse(token.source().isBlank());
     }
 
     @Test
-    @DisplayName("второй")
-    void second(DemoToken token) {
+    @DisplayName("Второй тест получает параметр от того же расширения")
+    void secondTestResolvesParameter(DemoToken token) {
       assertFalse(token.source().isBlank());
     }
   }
@@ -410,17 +410,7 @@ class ExtendsWithPiacesTest {
   }
 
   static void report(String place) {
-    Set<Integer> ids = ids(place);
-    assertEquals(INSTANCES.get(place), ids.size(), place + " " + DemoExtension.trace());
-    if (INSTANCES.get(place) != 1) {
-      System.out.println(place + ": " + verdict(ids));
-    }
-  }
-
-  static void announce(String place) {
-    if (INSTANCES.containsKey(place)) {
-      System.out.println(place + ": " + verdict(ids(place)));
-    }
+    assertEquals(INSTANCES.get(place), ids(place).size(), place + " " + DemoExtension.trace());
   }
 
   private static String className(TestInfo info) {
@@ -445,15 +435,6 @@ class ExtendsWithPiacesTest {
         .collect(Collectors.toSet());
   }
 
-  private static String verdict(Set<Integer> ids) {
-    if (ids.isEmpty()) {
-      return "не создаётся";
-    }
-    if (ids.size() == 1) {
-      return "один экземпляр на оба теста " + ids;
-    }
-    return "новый экземпляр на каждый тест " + ids;
-  }
 }
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
