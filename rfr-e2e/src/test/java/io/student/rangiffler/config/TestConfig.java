@@ -1,6 +1,5 @@
 package io.student.rangiffler.config;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 
@@ -40,24 +39,15 @@ public final class TestConfig {
     return Boolean.parseBoolean(value("headless", "true"));
   }
 
-  public static boolean validateMigrations() {
-    return Boolean.parseBoolean(value("validateMigrations", "false"));
+  public static boolean migrationCheck() {
+    return Boolean.parseBoolean(value("migrationCheck", "false"));
   }
 
-  public static Path repositoryRoot() {
-    String configured = value("repoRoot", "");
-    if (!configured.isEmpty()) {
-      return Path.of(configured).toAbsolutePath().normalize();
-    }
-    Path dir = Path.of("").toAbsolutePath();
-    while (dir != null) {
-      if (Files.isDirectory(dir.resolve("rfr-auth")) && Files.isDirectory(dir.resolve("rfr-api"))) {
-        return dir;
-      }
-      dir = dir.getParent();
-    }
-    throw new IllegalStateException(
-        "Не найден корень репозитория с rfr-auth и rfr-api. Запустите ./gradlew e2e из корня проекта или передайте -Drfr.repoRoot.");
+  public static Path migrations(String schema) {
+    return Path.of(value("projectDir", ".."))
+        .resolve("rfr-" + schema.substring("rangiffler-".length()))
+        .resolve("src/main/resources/db/migration")
+        .resolve(schema);
   }
 
   static String value(String key, String fallback) {

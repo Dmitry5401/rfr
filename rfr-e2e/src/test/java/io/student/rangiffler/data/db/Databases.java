@@ -7,25 +7,19 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 public enum Databases {
-  AUTH("rangiffler-auth", "rfr-auth"),
-  API("rangiffler-api", "rfr-api");
+  AUTH("rangiffler-auth"),
+  API("rangiffler-api");
 
   private final String schema;
-  private final String backend;
   private volatile HikariDataSource dataSource;
   private volatile DataSourceTransactionManager transactionManager;
 
-  Databases(String schema, String backend) {
+  Databases(String schema) {
     this.schema = schema;
-    this.backend = backend;
   }
 
   public String schema() {
     return schema;
-  }
-
-  public String backend() {
-    return backend;
   }
 
   public synchronized DataSource dataSource() {
