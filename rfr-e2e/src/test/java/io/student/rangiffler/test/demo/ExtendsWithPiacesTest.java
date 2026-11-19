@@ -19,6 +19,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
@@ -26,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Execution(ExecutionMode.SAME_THREAD)
 @DisplayName("Места установки @ExtendWith")
 class ExtendsWithPiacesTest {
 
@@ -439,6 +442,7 @@ class ExtendsWithPiacesTest {
 
 }
 
+@Execution(ExecutionMode.SAME_THREAD)
 @TestMethodOrder(MethodOrderer.MethodName.class)
 @ExtendWith(TestStarted.class)
 abstract class DemoCase {
