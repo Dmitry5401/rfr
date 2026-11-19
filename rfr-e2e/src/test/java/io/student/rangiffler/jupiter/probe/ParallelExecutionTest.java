@@ -2,6 +2,9 @@ package io.student.rangiffler.jupiter.probe;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,9 +48,19 @@ class ParallelExecutionTest {
   }
 
   @AfterAll
-  static void threeThreadsAtOnce() {
-    assertEquals(3, MAX_IN_FLIGHT.get(), "peak in-flight tests");
-    assertEquals(3, THREADS.size(), "worker threads: " + THREADS);
+  static void threeThreadsAtOnce() throws IOException {
+    int parallelism = Integer.parseInt(platformProperties().getProperty(
+        "junit.jupiter.execution.parallel.config.fixed.parallelism"));
+    assertEquals(parallelism, MAX_IN_FLIGHT.get(), "peak in-flight tests");
+    assertEquals(parallelism, THREADS.size(), "worker threads: " + THREADS);
+  }
+
+  private static Properties platformProperties() throws IOException {
+    try (InputStream in = ParallelExecutionTest.class.getResourceAsStream("/junit-platform.properties")) {
+      Properties properties = new Properties();
+      properties.load(in);
+      return properties;
+    }
   }
 
   private static void hold() {

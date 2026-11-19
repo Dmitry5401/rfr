@@ -46,6 +46,7 @@ class UsersQueueExtensionTest {
 
   private EngineExecutionResults run(Class<?> target) {
     return EngineTestKit.engine("junit-jupiter")
+        .enableImplicitConfigurationParameters(true)
         .configurationParameter(ProbeTargetCondition.PARAMETER, "true")
         .selectors(selectClass(target))
         .execute();
