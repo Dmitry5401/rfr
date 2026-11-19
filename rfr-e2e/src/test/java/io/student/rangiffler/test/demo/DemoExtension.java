@@ -40,7 +40,10 @@ public final class DemoExtension implements
   private static final AtomicInteger NEXT_ID = new AtomicInteger();
   private static final List<Trace> TRACE = new ArrayList<>();
   private final int id = NEXT_ID.incrementAndGet();
-  private boolean announced;
+
+  public DemoExtension() {
+    System.out.println("DemoExtension#" + id + " created");
+  }
 
   public static List<Trace> trace() {
     synchronized (TRACE) {
@@ -56,7 +59,6 @@ public final class DemoExtension implements
   @Override
   public void afterAll(ExtensionContext context) {
     log("afterAll", context);
-    ExtendsWithPiacesTest.announce(context.getDisplayName());
   }
 
   @Override
@@ -111,24 +113,28 @@ public final class DemoExtension implements
 
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
-    log("resolveParameter", extensionContext);
+    String parameter = parameterContext.getDeclaringExecutable().getName() + "#" + parameterContext.getIndex();
+    log("resolveParameter", extensionContext, parameter);
     return new DemoToken("#" + id);
   }
 
   private void log(String callback, ExtensionContext context) {
-    log(callback, place(context));
+    log(callback, context, "");
   }
 
-  private void log(String callback, String place) {
+  private void log(String callback, ExtensionContext context, String detail) {
+    log(callback, place(context), detail);
+  }
+
+  private void log(String callback, String place, String detail) {
     synchronized (TRACE) {
-      if (!announced) {
-        announced = true;
-        TRACE.add(new Trace(id, place, "new"));
-        System.out.println("#" + id + " new | " + place);
-      }
       TRACE.add(new Trace(id, place, callback));
     }
-    System.out.println("#" + id + " " + callback + " | " + place);
+    String line = "DemoExtension#" + id + " " + callback;
+    if (!detail.isEmpty()) {
+      line += " " + detail;
+    }
+    System.out.println(line);
   }
 
   private static String place(ExtensionContext context) {
