@@ -18,7 +18,9 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -438,11 +440,20 @@ class ExtendsWithPiacesTest {
 }
 
 @TestMethodOrder(MethodOrderer.MethodName.class)
+@ExtendWith(TestStarted.class)
 abstract class DemoCase {
 
   @AfterAll
   static void report(TestInfo info) {
     ExtendsWithPiacesTest.report(info.getDisplayName());
+  }
+}
+
+final class TestStarted implements BeforeEachCallback {
+
+  @Override
+  public void beforeEach(ExtensionContext context) {
+    System.out.println("начался тест: " + context.getDisplayName());
   }
 }
 
