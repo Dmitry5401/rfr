@@ -1,5 +1,6 @@
 package io.student.rangiffler.config;
 
+import java.nio.file.Path;
 import java.util.Locale;
 
 public final class TestConfig {
@@ -36,6 +37,17 @@ public final class TestConfig {
 
   public static boolean headless() {
     return Boolean.parseBoolean(value("headless", "true"));
+  }
+
+  public static boolean migrationCheck() {
+    return Boolean.parseBoolean(value("migrationCheck", "false"));
+  }
+
+  public static Path migrations(String schema) {
+    return Path.of(value("projectDir", ".."))
+        .resolve("rfr-" + schema.substring("rangiffler-".length()))
+        .resolve("src/main/resources/db/migration")
+        .resolve(schema);
   }
 
   static String value(String key, String fallback) {
