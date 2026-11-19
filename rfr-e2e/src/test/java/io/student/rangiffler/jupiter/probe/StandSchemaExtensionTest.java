@@ -1,6 +1,7 @@
 package io.student.rangiffler.jupiter.probe;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.student.rangiffler.config.TestConfig;
@@ -25,16 +26,18 @@ import org.junit.jupiter.api.parallel.ResourceLock;
 class StandSchemaExtensionTest {
 
   @Test
-  void registeredThroughServiceLoader() throws IOException {
-    String listing;
+  void notRegisteredThroughServiceLoader() throws IOException {
+    String listing = "";
     try (InputStream in = getClass().getResourceAsStream(
         "/META-INF/services/org.junit.jupiter.api.extension.Extension")) {
-      listing = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+      if (in != null) {
+        listing = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+      }
     }
 
-    assertTrue(listing.contains(StandSchemaExtension.class.getName()), listing);
+    assertFalse(listing.contains(StandSchemaExtension.class.getName()), listing);
     assertTrue(ServiceLoader.load(Extension.class).stream()
-        .anyMatch(provider -> provider.type().equals(StandSchemaExtension.class)));
+        .noneMatch(provider -> provider.type().equals(StandSchemaExtension.class)));
   }
 
   @Test

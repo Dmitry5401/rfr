@@ -36,6 +36,7 @@ dependencies {
     testRuntimeOnly "com.mysql:mysql-connector-j"
 
     testImplementation "org.junit.jupiter:junit-jupiter"
+    testImplementation "org.junit.platform:junit-platform-suite"
     testImplementation "org.junit.platform:junit-platform-testkit"
     testImplementation "org.flywaydb:flyway-core:$flywayVersion"
     testRuntimeOnly "org.flywaydb:flyway-mysql:$flywayVersion"
@@ -63,6 +64,16 @@ tasks.withType(Test).configureEach {
     jvmArgumentProviders.add({ ["-javaagent:${configurations.agent.singleFile}"] } as CommandLineArgumentProvider)
     // Always run e2e tests; do not skip as UP-TO-DATE when inputs unchanged
     outputs.upToDateWhen { false }
+}
+
+tasks.register('e2e', Test) {
+    group = 'verification'
+    description = 'Runs tests through E2eSuite. Engines are not restricted.'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    filter {
+        includeTestsMatching 'io.student.rangiffler.suite.E2eSuite'
+    }
 }
 
 tasks.register('installPlaywright', JavaExec) {
