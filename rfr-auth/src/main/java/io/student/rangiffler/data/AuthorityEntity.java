@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
@@ -19,7 +18,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "authority")
 public class AuthorityEntity implements Serializable {
@@ -35,6 +33,19 @@ public class AuthorityEntity implements Serializable {
   @ManyToOne
   @JoinColumn(name = "user_id")
   private UserEntity user;
+
+  protected AuthorityEntity() {
+  }
+
+  public static AuthorityEntity granted(Authority authority) {
+    AuthorityEntity entity = new AuthorityEntity();
+    entity.authority = Objects.requireNonNull(authority, "authority");
+    return entity;
+  }
+
+  void bind(UserEntity user) {
+    this.user = user;
+  }
 
   @Override
   public final boolean equals(Object o) {

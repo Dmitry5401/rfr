@@ -10,6 +10,7 @@ def allureReportVersion = '3.17.0'
 def aspectJVersion = '1.9.25.1'
 def junitVersion = '6.1.3'
 def playwrightVersion = '1.63.0'
+def flywayVersion = rootProject.project(':rfr-api').flywayVersion
 
 configurations {
     agent {
@@ -23,16 +24,24 @@ dependencies {
 
     testImplementation platform("org.junit:junit-bom:$junitVersion")
     testImplementation platform("io.qameta.allure:allure-bom:$allureJavaVersion")
+    testImplementation platform("org.springframework.boot:spring-boot-dependencies:4.1.1")
 
     testImplementation "io.qameta.allure:allure-jupiter"
     testImplementation "io.qameta.allure:allure-playwright"
     testImplementation "com.microsoft.playwright:playwright:$playwrightVersion"
 
+    testImplementation "org.springframework:spring-jdbc"
+    testImplementation "org.springframework.security:spring-security-crypto"
+    testImplementation "com.zaxxer:HikariCP"
+    testRuntimeOnly "com.mysql:mysql-connector-j"
+
     testImplementation "org.junit.jupiter:junit-jupiter"
-    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+    testImplementation "org.junit.platform:junit-platform-launcher"
+    testImplementation "org.junit.platform:junit-platform-testkit"
+    testImplementation "org.flywaydb:flyway-core:$flywayVersion"
+    testRuntimeOnly "org.flywaydb:flyway-mysql:$flywayVersion"
     testRuntimeOnly "org.aspectj:aspectjrt:$aspectJVersion"
 }
-
 
 allure {
     version = allureReportVersion
@@ -41,7 +50,51 @@ allure {
     }
 }
 
-test {
+def shortCommit = providers.exec {
+    workingDir = rootProject.projectDir
+    commandLine 'git', 'rev-parse', '--short', 'HEAD'
+}.standardOutput.asText.get().trim()
+
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
+    systemProperties System.getProperties().findAll { key, value -> key.toString().startsWith('rfr.') }
+    systemProperty 'rfr.commit', shortCommit
+    systemProperty 'rfr.projectDir', rootProject.projectDir.absolutePath
+    systemProperty 'allure.results.directory', layout.buildDirectory.dir('allure-results').get().asFile.absolutePath
     jvmArgumentProviders.add({ ["-javaagent:${configurations.agent.singleFile}"] } as CommandLineArgumentProvider)
+    // Always run e2e tests; do not skip as UP-TO-DATE when inputs unchanged
+    outputs.upToDateWhen { false }
+}
+
+test {
+    failOnNoDiscoveredTests = false
+    doFirst {
+        if (filter.commandLineIncludePatterns.empty) {
+            options { excludeTags 'ui' }
+        }
+    }
+}
+
+def waitForStand = tasks.register('waitForStand', Exec) {
+    group = 'verification'
+    description = 'Waits until MySQL, rfr-auth, rfr-api and the front respond'
+    workingDir = rootProject.projectDir
+    commandLine 'scripts/wait-for-stand.sh'
+}
+
+tasks.register('e2e', Test) {
+    group = 'verification'
+    description = 'Runs UI tests against a running stand'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    systemProperty 'rfr.migrationCheck', 'true'
+    useJUnitPlatform {
+        includeTags 'ui'
+    }
+}
+
+tasks.register('installPlaywright', JavaExec) {
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.microsoft.playwright.CLI'
+    args 'install', 'chromium'
 }

@@ -11,7 +11,6 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
@@ -19,7 +18,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "\"user\"")
 public class UserEntity implements Serializable {
@@ -44,6 +42,31 @@ public class UserEntity implements Serializable {
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "country_id", referencedColumnName = "id")
   private CountryEntity country;
+
+  protected UserEntity() {
+  }
+
+  public static UserEntity create(String username, CountryEntity country) {
+    UserEntity user = new UserEntity();
+    user.username = Objects.requireNonNull(username, "username");
+    user.country = Objects.requireNonNull(country, "country");
+    return user;
+  }
+
+  public void updateProfile(String firstname, String lastName, byte[] avatar, CountryEntity country) {
+    if (firstname != null) {
+      this.firstname = firstname;
+    }
+    if (lastName != null) {
+      this.lastName = lastName;
+    }
+    if (avatar != null) {
+      this.avatar = avatar;
+    }
+    if (country != null) {
+      this.country = country;
+    }
+  }
 
   @Override
   public final boolean equals(Object o) {
