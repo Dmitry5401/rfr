@@ -24,9 +24,9 @@ ports are not available: ... bind: Only one usage of each socket address ... 330
 
 на хосте уже слушает локальный MySQL (`mysqld.exe`). Освободите порт в **PowerShell** (не Git Bash — там `/FI` ломается).
 
-```powershell
+```powershell с правами админа
 # из корня репо (пример пути)
-cd C:\Users\<user>\Projects\qa_guru_2026_advanced\rfr
+cd C:\Users\user\Projects\qa_guru_2026_advanced\rfr
 
 # кто держит 3306
 netstat -ano | findstr :3306
