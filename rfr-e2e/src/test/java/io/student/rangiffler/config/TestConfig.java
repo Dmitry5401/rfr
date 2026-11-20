@@ -57,6 +57,11 @@ public final class TestConfig {
     return Boolean.parseBoolean(value("migrationCheck", "false"));
   }
 
+  /** Short git commit hash from Gradle {@code -Drfr.commit}; tests must not run git themselves. */
+  public static String commit() {
+    return value("commit", "unknown");
+  }
+
   public static Path migrations(String schema) {
     return Path.of(value("projectDir", ".."))
         .resolve("rfr-" + schema.substring("rangiffler-".length()))

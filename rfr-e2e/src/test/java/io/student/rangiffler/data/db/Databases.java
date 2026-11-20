@@ -29,6 +29,7 @@ public enum Databases {
       created.setUsername(TestConfig.dbUser());
       created.setPassword(TestConfig.dbPassword());
       created.setMaximumPoolSize(4);
+      created.setConnectionTimeout(2_000);
       created.setPoolName("rfr-e2e-" + schema);
       dataSource = created;
     }
@@ -40,5 +41,14 @@ public enum Databases {
       transactionManager = new DataSourceTransactionManager(dataSource());
     }
     return transactionManager;
+  }
+
+  /** Drops a cached pool so a later test can reopen with a different {@code rfr.dbUrl}. */
+  public synchronized void close() {
+    if (dataSource != null) {
+      dataSource.close();
+      dataSource = null;
+      transactionManager = null;
+    }
   }
 }

@@ -50,9 +50,17 @@ allure {
     }
 }
 
+def shortCommit = providers.exec {
+    workingDir = rootProject.projectDir
+    commandLine 'git', 'rev-parse', '--short', 'HEAD'
+}.standardOutput.asText.get().trim()
+
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
     systemProperties System.getProperties().findAll { key, value -> key.toString().startsWith('rfr.') }
+    systemProperty 'rfr.commit', shortCommit
+    systemProperty 'rfr.projectDir', rootProject.projectDir.absolutePath
+    systemProperty 'allure.results.directory', layout.buildDirectory.dir('allure-results').get().asFile.absolutePath
     jvmArgumentProviders.add({ ["-javaagent:${configurations.agent.singleFile}"] } as CommandLineArgumentProvider)
     // Always run e2e tests; do not skip as UP-TO-DATE when inputs unchanged
     outputs.upToDateWhen { false }
