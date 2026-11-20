@@ -10,11 +10,13 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import java.nio.file.Files;
 import java.io.IOException;
 import java.util.Base64;
 
+@Tag("ui")
 @UsePlaywright
 @DisplayName("Профиль")
 class ProfileTest {

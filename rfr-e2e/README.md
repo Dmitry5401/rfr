@@ -6,13 +6,14 @@ E2E-тесты Rangiffler: JUnit 6.1.3, Playwright Java 1.63 (`@UsePlaywright`),
 
 ```bash
 ./gradlew :rfr-e2e:installPlaywright                      # один раз: браузер Chromium
-./gradlew :rfr-e2e:test --tests '*RegistrationTest'
-./gradlew :rfr-e2e:test --tests '*MainPageTest'
+./gradlew e2e                                             # все UI-тесты (тег ui)
+./gradlew :rfr-e2e:test                                   # всё без тега ui; стенд не нужен
+./gradlew :rfr-e2e:test --tests '*RegistrationTest'       # с --tests тег ui не отсекается
 ./gradlew :rfr-e2e:test --tests io.student.rangiffler.jupiter.probe.UserExtensionTest
 ./gradlew :rfr-e2e:allureReport                           # rfr-e2e/build/reports/allure-report/allureReport/index.html
 ```
 
-UI-тестам нужен стенд: MySQL `:3306`, `rfr-auth :9001`, `rfr-api :8081`, фронт `:3001` (см. корневой README). Пробам `UserExtension` стенд целиком не нужен, см. раздел ниже.
+UI-тестам нужен стенд: MySQL `:3306`, `rfr-auth :9001`, `rfr-api :8081`, фронт `:3001` (см. корневой README). Перед первым классом с тегом `ui` `StandReadinessExtension` ждёт стенд (те же признаки, что `scripts/wait-for-stand.sh`) не дольше `rfr.standTimeout` секунд — и для `e2e`, и для запуска из IDE. Задача `waitForStand` ждёт стенд отдельно; `e2e` от неё не зависит. Пробам `UserExtension` стенд целиком не нужен, см. раздел ниже.
 
 ## Конфигурация
 
@@ -26,6 +27,9 @@ UI-тестам нужен стенд: MySQL `:3306`, `rfr-auth :9001`, `rfr-api
 | `rfr.dbUrl` | `jdbc:mysql://localhost:3306` (схема добавляется кодом) |
 | `rfr.dbUser` / `rfr.dbPassword` | `root` / `secret` |
 | `rfr.browser` / `rfr.headless` | `chromium` / `true` |
+| `rfr.standCheck` | `true` — ждать стенд перед UI-тестами |
+| `rfr.standTimeout` | `180` (секунды) |
+| `rfr.migrationCheck` | `false`, задача `e2e` включает |
 
 ## Архитектура
 
@@ -33,8 +37,9 @@ UI-тестам нужен стенд: MySQL `:3306`, `rfr-auth :9001`, `rfr-api
 
 | Пакет | Что лежит |
 |---|---|
-| `config` | `TestConfig` — единственная точка чтения настроек |
-| `jupiter` | всё про JUnit: `annotation` (`@User`, `@ProbeTarget`), `extension` (`UserExtension`), `condition` (`ProbeTargetCondition`), `probe` (`UserExtensionTest`) |
+| `config` | только `TestConfig` — единственная точка чтения настроек |
+| `stand` | готовность и схема стенда: `Stand` / `Service` (`TcpService`, `HttpService`), `Migrations` |
+| `jupiter` | всё про JUnit: `annotation` (`@User`, `@ProbeTarget`), `extension` (`UserExtension`; через ServiceLoader: `StandReadinessExtension`, затем `StandSchemaExtension`), `condition` (`ProbeTargetCondition`), `probe` |
 | `data` | тестовые данные и их владельцы: `TestUser`, `UserFixture`; `db` — `Databases`, `Jdbc` |
 | `utils` | статические утилиты без состояния: `RandomDataUtils` — случайные username/password; сюда же будущие генераторы (описания фото и т.п.) |
 | `ui` | `page` — Page Objects, `component` — общие части страниц |
