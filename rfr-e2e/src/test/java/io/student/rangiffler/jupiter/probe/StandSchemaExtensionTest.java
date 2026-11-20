@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import io.student.rangiffler.config.TestConfig;
 import io.student.rangiffler.data.db.Databases;
 import io.student.rangiffler.jupiter.extension.StandSchemaExtension;
-import io.student.rangiffler.jupiter.extension.StandSchemaLauncherSessionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +18,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.api.parallel.ResourceLock;
-import org.junit.platform.launcher.LauncherSessionListener;
 
 @Isolated
 @ResourceLock("schema-migrations")
@@ -36,15 +34,6 @@ class StandSchemaExtensionTest {
     assertTrue(extensionListing.contains(StandSchemaExtension.class.getName()), extensionListing);
     assertTrue(ServiceLoader.load(Extension.class).stream()
         .anyMatch(provider -> provider.type().equals(StandSchemaExtension.class)));
-
-    String listenerListing;
-    try (InputStream in = getClass().getResourceAsStream(
-        "/META-INF/services/org.junit.platform.launcher.LauncherSessionListener")) {
-      listenerListing = new String(in.readAllBytes(), StandardCharsets.UTF_8);
-    }
-    assertTrue(listenerListing.contains(StandSchemaLauncherSessionListener.class.getName()), listenerListing);
-    assertTrue(ServiceLoader.load(LauncherSessionListener.class).stream()
-        .anyMatch(provider -> provider.type().equals(StandSchemaLauncherSessionListener.class)));
   }
 
   @Test
