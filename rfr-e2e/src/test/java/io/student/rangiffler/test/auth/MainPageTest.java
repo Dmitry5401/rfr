@@ -6,8 +6,10 @@ import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.ui.page.LandingPage;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("ui")
 @UsePlaywright
 @DisplayName("Главная страница с SQL-предусловием")
 class MainPageTest {

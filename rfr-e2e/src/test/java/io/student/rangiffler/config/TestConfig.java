@@ -1,6 +1,8 @@
 package io.student.rangiffler.config;
 
+import java.net.URI;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Locale;
 
 public final class TestConfig {
@@ -29,6 +31,18 @@ public final class TestConfig {
 
   public static String dbPassword() {
     return value("dbPassword", "secret");
+  }
+
+  public static URI dbAddress() {
+    return URI.create(value("dbUrl", "jdbc:mysql://localhost:3306").substring("jdbc:".length()));
+  }
+
+  public static boolean standCheck() {
+    return Boolean.parseBoolean(value("standCheck", "true"));
+  }
+
+  public static Duration standTimeout() {
+    return Duration.ofSeconds(Long.parseLong(value("standTimeout", "180")));
   }
 
   public static String browser() {
