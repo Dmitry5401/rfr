@@ -29,11 +29,12 @@ class SuiteExtensionRegistrationTest {
   @DisplayName("Вне jupiter/probe нет @ExtendWith на реальных SuiteExtension")
   void productionSourcesDoNotExtendWithSuiteExtensions() throws IOException {
     Path testRoot = Path.of("src/test/java");
+    Path probeRoot = testRoot.resolve("io/student/rangiffler/jupiter/probe").normalize();
     assertTrue(Files.isDirectory(testRoot), "expected to run with rfr-e2e project dir");
     try (Stream<Path> files = Files.walk(testRoot)) {
       List<String> offenders = files
-          .filter(path -> path.toString().endsWith(".java"))
-          .filter(path -> !path.toString().contains("/jupiter/probe/"))
+          .filter(path -> path.getFileName() != null && path.getFileName().toString().endsWith(".java"))
+          .filter(path -> !path.normalize().startsWith(probeRoot))
           .flatMap(path -> findExtendWithOffenders(path).stream())
           .toList();
       assertTrue(offenders.isEmpty(), String.join(System.lineSeparator(), offenders));
