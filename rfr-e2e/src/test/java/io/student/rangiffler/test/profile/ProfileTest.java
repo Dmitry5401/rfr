@@ -110,7 +110,7 @@ class ProfileTest {
     private static Path avatar() {
         try {
             return Path.of(Objects.requireNonNull(
-                ProfileTest.class.getResource("/images/avatar.png"),
+                ProfileTest.class.getResource("/img/avatar.png"),
                 "avatar.png").toURI());
         } catch (URISyntaxException e) {
             throw new IllegalStateException("Cannot read avatar.png", e);
