@@ -4,6 +4,7 @@ import io.student.rangiffler.data.StaticUserFixture;
 import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.data.UserFixture;
 import io.student.rangiffler.jupiter.annotation.StaticUser;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -18,21 +19,23 @@ public final class UsersQueueExtension implements BeforeEachCallback, ParameterR
 
   @Override
   public void beforeEach(ExtensionContext context) {
-    Parameter[] parameters = context.getRequiredTestMethod().getParameters();
+    Method testMethod = context.getRequiredTestMethod();
+    Parameter[] parameters = testMethod.getParameters();
     for (int index = 0; index < parameters.length; index++) {
-      if (parameters[index].getAnnotation(StaticUser.class) != null) {
-        UserFixture fixture = new StaticUserFixture();
-        context.getStore(NAMESPACE).put(key(index), new StoredUser(fixture));
-        fixture.create();
+      if (!supports(parameters[index], testMethod)) {
+        continue;
       }
+      UserFixture fixture = new StaticUserFixture();
+      context.getStore(NAMESPACE).put(key(index), new StoredUser(fixture));
+      fixture.create();
     }
   }
 
   @Override
   public boolean supportsParameter(ParameterContext parameter, ExtensionContext context) {
-    return parameter.getParameter().getType() == TestUser.class
-        && parameter.isAnnotated(StaticUser.class)
-        && context.getTestMethod().filter(parameter.getDeclaringExecutable()::equals).isPresent();
+    return context.getTestMethod()
+        .filter(testMethod -> supports(parameter.getParameter(), testMethod))
+        .isPresent();
   }
 
   @Override
@@ -43,6 +46,12 @@ public final class UsersQueueExtension implements BeforeEachCallback, ParameterR
           "No static user was taken for parameter " + parameter.getIndex() + " of " + context.getRequiredTestMethod());
     }
     return stored.fixture().user();
+  }
+
+  private static boolean supports(Parameter parameter, Method testMethod) {
+    return parameter.getType() == TestUser.class
+        && parameter.isAnnotationPresent(StaticUser.class)
+        && parameter.getDeclaringExecutable().equals(testMethod);
   }
 
   private static String key(int index) {

@@ -7,13 +7,16 @@ import com.microsoft.playwright.junit.OptionsFactory;
 import com.microsoft.playwright.junit.UsePlaywright;
 import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.jupiter.annotation.User;
+import io.student.rangiffler.jupiter.extension.UserExtension;
 import io.student.rangiffler.ui.page.LandingPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 @Tag("ui")
 @UsePlaywright(LoginNegativeTest.EnglishOptions.class)
+@ExtendWith(UserExtension.class)
 @DisplayName("Негативный вход")
 class LoginNegativeTest {
     private static final String BAD_CREDENTIALS = "Bad credentials";

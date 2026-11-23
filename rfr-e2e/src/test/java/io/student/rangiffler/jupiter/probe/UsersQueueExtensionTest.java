@@ -5,12 +5,14 @@ import io.student.rangiffler.data.UsersQueue;
 import io.student.rangiffler.jupiter.annotation.ProbeTarget;
 import io.student.rangiffler.jupiter.annotation.StaticUser;
 import io.student.rangiffler.jupiter.condition.ProbeTargetCondition;
+import io.student.rangiffler.jupiter.extension.UsersQueueExtension;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.platform.engine.reporting.ReportEntry;
@@ -64,6 +66,7 @@ class UsersQueueExtensionTest {
   }
 
   @ProbeTarget
+  @ExtendWith(UsersQueueExtension.class)
   static final class FourInARow {
     @Test
     void first(@StaticUser TestUser user) {
@@ -87,6 +90,7 @@ class UsersQueueExtensionTest {
   }
 
   @ProbeTarget
+  @ExtendWith(UsersQueueExtension.class)
   static final class Failing {
     @Test
     void fail(TestReporter reporter, @StaticUser TestUser user) {

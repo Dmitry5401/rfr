@@ -6,7 +6,7 @@ E2E-тесты Rangiffler: JUnit 6.1.3, Playwright Java 1.63 (`@UsePlaywright`),
 
 ```bash
 ./gradlew :rfr-e2e:installPlaywright                      # один раз: браузер Chromium
-./gradlew e2e                                             # все UI-тесты (тег ui)
+./gradlew e2e                                             # UI через E2eSuite (@SelectPackages + @IncludeTags ui)
 ./gradlew :rfr-e2e:test                                   # всё без тега ui; стенд не нужен
 ./gradlew :rfr-e2e:test --tests '*RegistrationTest'       # с --tests тег ui не отсекается
 ./gradlew :rfr-e2e:test --tests io.student.rangiffler.jupiter.probe.UserExtensionTest
@@ -40,7 +40,8 @@ UI-тестам нужен стенд: MySQL `:3306`, `rfr-auth :9001`, `rfr-api
 |---|---|
 | `config` | только `TestConfig` — единственная точка чтения настроек |
 | `stand` | готовность и схема стенда: `Stand` / `Service` (`TcpService`, `HttpService`), `Migrations` |
-| `jupiter` | всё про JUnit: `annotation` (`@User`, `@ProbeTarget`), `extension` (`UserExtension`; через ServiceLoader: `AllureEnvironmentExtension`, затем `StandReadinessExtension`, затем `StandSchemaExtension`), `condition` (`ProbeTargetCondition`), `probe` |
+| `jupiter` | всё про JUnit: `annotation` (`@User` / `@StaticUser` — маркеры параметров; `@ProbeTarget`), `extension` (`UserExtension` / `UsersQueueExtension` — через `@ExtendWith` на классе; через ServiceLoader: `AllureEnvironmentExtension`, затем `StandReadinessExtension`, затем `StandSchemaExtension`), `condition` (`ProbeTargetCondition`), `probe` |
+| `suite` | `E2eSuite` — JUnit Platform Suite (`@SelectPackages` + `@IncludeTags("ui")`); задача `e2e` выбирает этот класс |
 | `data` | тестовые данные и их владельцы: `TestUser`, `UserFixture`; `db` — `Databases`, `Jdbc` |
 | `utils` | статические утилиты без состояния: `RandomDataUtils` — случайные username/password; сюда же будущие генераторы (описания фото и т.п.) |
 | `ui` | `page` — Page Objects, `component` — общие части страниц |
@@ -49,7 +50,8 @@ UI-тестам нужен стенд: MySQL `:3306`, `rfr-auth :9001`, `rfr-api
 Правила: в `jupiter` нет SQL и локаторов; в `data` нет JUnit; в `test` нет локаторов и SQL; `ThreadLocal` для состояния теста не используется — состояние живёт в Store расширения.
 
 - `RegistrationTest` — регистрация через UI, вход, главная, имя в профиле. Пользователь удаляется в `@AfterEach` той же фикстурой.
-- `MainPageTest` — пользователь приходит параметром `@User TestUser`: `UserExtension` до теста создаёт его SQL-скриптами в `rangiffler-auth` (`UserFixture.create()`), после теста удаляет профиль API, authority и user (`close()` через Store).
+- `MainPageTest` — класс регистрирует `@ExtendWith(UserExtension.class)`; параметр `@User TestUser` — маркер. Extension до теста создаёт пользователя SQL-скриптами в `rangiffler-auth` (`UserFixture.create()`), после теста удаляет профиль API, authority и user (`close()` через Store).
+- `E2eSuite` — один вход для UI-набора: `./gradlew e2e` фильтрует suite-класс; SuiteExtension (ServiceLoader) по-прежнему готовит стенд/схему/Allure.
 - `UserExtensionTest` — проба архитектуры расширения через `EngineTestKit` и `TestReporter`. Браузер не открывает.
 
 Как JUnit вызывает эти методы и где хранится fixture — занятие 3. SQL и транзакции — занятие 17.
@@ -85,6 +87,7 @@ docker compose ps          # у mysql статус healthy
 - `outcomeInvitations = -1` роняет тест с `IllegalArgumentException` до создания пользователя, записей в репорте нет.
 - `friends = -1` роняет `beforeEach` до тела теста, записей в репорте нет.
 - `TestUser` без `@User` и `@User` на параметре `@BeforeEach` не резолвятся.
+- `@User` на неверном типе (`String`) не создаёт пользователя: `beforeEach` использует ту же проверку, что `supportsParameter`.
 
 Вложенные цели (`Observed`, `Failing`, `TwoUsers` и остальные) сами не являются тестовыми классами `*Test`. `@ProbeTarget` включает их только когда `EngineTestKit` передаёт конфигурационный параметр `rfr.probe=true`. Это не свойство `-Drfr.*` и не переменная `TestConfig`: снаружи цели остаются выключенными, и обычный прогон их не исполняет.
 

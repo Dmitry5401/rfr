@@ -1,15 +1,16 @@
 package io.student.rangiffler.jupiter.annotation;
 
-import io.student.rangiffler.jupiter.extension.UserExtension;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.junit.jupiter.api.extension.ExtendWith;
 
+/**
+ * Parameter marker for a test user created by {@code UserExtension}.
+ * Register the extension on the test class with {@code @ExtendWith(UserExtension.class)}.
+ */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(UserExtension.class)
 public @interface User {
   int friends() default 0;
 

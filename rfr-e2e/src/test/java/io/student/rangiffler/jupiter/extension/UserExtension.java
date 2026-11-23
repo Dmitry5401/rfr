@@ -4,6 +4,7 @@ import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.data.UserFixture;
 import io.student.rangiffler.data.UserRequest;
 import io.student.rangiffler.jupiter.annotation.User;
+import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -18,22 +19,24 @@ public final class UserExtension implements BeforeEachCallback, ParameterResolve
 
   @Override
   public void beforeEach(ExtensionContext context) {
-    Parameter[] parameters = context.getRequiredTestMethod().getParameters();
+    Method testMethod = context.getRequiredTestMethod();
+    Parameter[] parameters = testMethod.getParameters();
     for (int index = 0; index < parameters.length; index++) {
-      User user = parameters[index].getAnnotation(User.class);
-      if (user != null) {
-        UserFixture fixture = new UserRequest(user).fixture();
-        context.getStore(NAMESPACE).put(key(index), new StoredUser(fixture));
-        fixture.create();
+      if (!supports(parameters[index], testMethod)) {
+        continue;
       }
+      User user = parameters[index].getAnnotation(User.class);
+      UserFixture fixture = new UserRequest(user).fixture();
+      context.getStore(NAMESPACE).put(key(index), new StoredUser(fixture));
+      fixture.create();
     }
   }
 
   @Override
   public boolean supportsParameter(ParameterContext parameter, ExtensionContext context) {
-    return parameter.getParameter().getType() == TestUser.class
-        && parameter.isAnnotated(User.class)
-        && context.getTestMethod().filter(parameter.getDeclaringExecutable()::equals).isPresent();
+    return context.getTestMethod()
+        .filter(testMethod -> supports(parameter.getParameter(), testMethod))
+        .isPresent();
   }
 
   @Override
@@ -44,6 +47,12 @@ public final class UserExtension implements BeforeEachCallback, ParameterResolve
           "No user was created for parameter " + parameter.getIndex() + " of " + context.getRequiredTestMethod());
     }
     return stored.fixture().user();
+  }
+
+  private static boolean supports(Parameter parameter, Method testMethod) {
+    return parameter.getType() == TestUser.class
+        && parameter.isAnnotationPresent(User.class)
+        && parameter.getDeclaringExecutable().equals(testMethod);
   }
 
   private static String key(int index) {

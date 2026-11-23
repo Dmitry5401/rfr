@@ -8,6 +8,7 @@ import io.student.rangiffler.data.db.ApiProfile;
 import io.student.rangiffler.jupiter.annotation.ProbeTarget;
 import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.jupiter.condition.ProbeTargetCondition;
+import io.student.rangiffler.jupiter.extension.UserExtension;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestReporter;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.platform.engine.TestExecutionResult;
 import org.junit.platform.engine.reporting.ReportEntry;
@@ -154,6 +156,16 @@ class UserExtensionTest {
     assertTrue(entriesOf(results).isEmpty(), "@BeforeEach body ran with a resolved @User");
   }
 
+  @Test
+  @DisplayName("@User на неверном типе не создаёт пользователя в БД")
+  void wrongTypeUserDoesNotCreateAccount() {
+    EngineExecutionResults results = run(WrongType.class);
+
+    assertInstanceOf(ParameterResolutionException.class, failure(results, ParameterResolutionException.class),
+        "Wrong-type @User did not fail parameter resolution");
+    assertTrue(entriesOf(results).isEmpty(), "Test body ran after a wrong-type @User");
+  }
+
   private EngineExecutionResults run(Class<?> target) {
     return EngineTestKit.engine("junit-jupiter")
         .enableImplicitConfigurationParameters(true)
@@ -200,6 +212,7 @@ class UserExtensionTest {
   }
 
   @ProbeTarget
+  @ExtendWith(UserExtension.class)
   static final class Observed {
     @Test
     void observe(TestReporter reporter, @User(friends = 1, incomeInvitations = 1, outcomeInvitations = 1) TestUser user) {
@@ -233,6 +246,7 @@ class UserExtensionTest {
   }
 
   @ProbeTarget
+  @ExtendWith(UserExtension.class)
   static final class Failing {
     @Test
     void fail(TestReporter reporter, @User TestUser user) {
@@ -242,6 +256,7 @@ class UserExtensionTest {
   }
 
   @ProbeTarget
+  @ExtendWith(UserExtension.class)
   static final class TwoUsers {
     @Test
     void observe(TestReporter reporter, @User TestUser first, @User TestUser second) {
@@ -254,6 +269,7 @@ class UserExtensionTest {
   }
 
   @ProbeTarget
+  @ExtendWith(UserExtension.class)
   static final class OutcomeInvitation {
     @Test
     void observe(TestReporter reporter, @User(outcomeInvitations = 1) TestUser user) {
@@ -269,6 +285,7 @@ class UserExtensionTest {
   }
 
   @ProbeTarget
+  @ExtendWith(UserExtension.class)
   static final class NegativeOutcomeInvitations {
     @Test
     void observe(TestReporter reporter, @User(outcomeInvitations = -1) TestUser user) {
@@ -277,6 +294,7 @@ class UserExtensionTest {
   }
 
   @ProbeTarget
+  @ExtendWith(UserExtension.class)
   static final class NegativeFriends {
     @Test
     void observe(TestReporter reporter, @User(friends = -1) TestUser user) {
@@ -285,6 +303,7 @@ class UserExtensionTest {
   }
 
   @ProbeTarget
+  @ExtendWith(UserExtension.class)
   static final class Unannotated {
     @Test
     void observe(TestReporter reporter, TestUser user) {
@@ -293,6 +312,7 @@ class UserExtensionTest {
   }
 
   @ProbeTarget
+  @ExtendWith(UserExtension.class)
   static final class BeforeEachUser {
     @BeforeEach
     void prepare(TestReporter reporter, @User TestUser user) {
@@ -301,6 +321,15 @@ class UserExtensionTest {
 
     @Test
     void observe() {
+    }
+  }
+
+  @ProbeTarget
+  @ExtendWith(UserExtension.class)
+  static final class WrongType {
+    @Test
+    void observe(TestReporter reporter, @User String username) {
+      reporter.publishEntry("username", username);
     }
   }
 }
