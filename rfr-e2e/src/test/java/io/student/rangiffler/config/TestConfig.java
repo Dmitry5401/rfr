@@ -69,6 +69,10 @@ public final class TestConfig {
     return Duration.ofSeconds(Long.parseLong(value("actionTimeout", "5")));
   }
 
+  public static Duration navigationTimeout() {
+    return Duration.ofSeconds(Long.parseLong(value("navigationTimeout", "30")));
+  }
+
   public static boolean migrationCheck() {
     return Boolean.parseBoolean(value("migrationCheck", "false"));
   }

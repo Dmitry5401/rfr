@@ -30,6 +30,7 @@ UI-тестам нужен стенд: MySQL `:3306`, `rfr-auth :9001`, `rfr-api
 | `rfr.viewportWidth` / `rfr.viewportHeight` | `1920` / `1080` — viewport в `BrowserOptions` |
 | `rfr.testIdAttribute` | `data-test-id` — атрибут для `getByTestId` |
 | `rfr.actionTimeout` | `5` (секунды) — Playwright default timeout для click/fill/assert; не JUnit `@Timeout` |
+| `rfr.navigationTimeout` | `30` (секунды) — Playwright default navigation timeout |
 | `rfr.standCheck` | `true` — ждать стенд перед UI-тестами |
 | `rfr.standTimeout` | `180` (секунды) |
 | `rfr.migrationCheck` | `false`, задача `e2e` включает |
