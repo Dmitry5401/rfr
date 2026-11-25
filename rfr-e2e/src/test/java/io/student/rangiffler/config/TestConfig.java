@@ -53,6 +53,18 @@ public final class TestConfig {
     return Boolean.parseBoolean(value("headless", "true"));
   }
 
+  public static int viewportWidth() {
+    return Integer.parseInt(value("viewportWidth", "1920"));
+  }
+
+  public static int viewportHeight() {
+    return Integer.parseInt(value("viewportHeight", "1080"));
+  }
+
+  public static String testIdAttribute() {
+    return value("testIdAttribute", "data-test-id");
+  }
+
   public static boolean migrationCheck() {
     return Boolean.parseBoolean(value("migrationCheck", "false"));
   }

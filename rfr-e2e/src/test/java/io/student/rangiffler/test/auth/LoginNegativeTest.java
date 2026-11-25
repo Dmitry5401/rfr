@@ -5,6 +5,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.junit.Options;
 import com.microsoft.playwright.junit.OptionsFactory;
 import com.microsoft.playwright.junit.UsePlaywright;
+import io.student.rangiffler.config.TestConfig;
 import io.student.rangiffler.data.TestUser;
 import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.jupiter.extension.UserExtension;
@@ -25,7 +26,12 @@ class LoginNegativeTest {
         @Override
         public Options getOptions() {
             return new Options()
-                .setContextOptions(new Browser.NewContextOptions().setLocale("en-US"));
+                .setBrowserName(TestConfig.browser())
+                .setHeadless(TestConfig.headless())
+                .setTestIdAttribute(TestConfig.testIdAttribute())
+                .setContextOptions(new Browser.NewContextOptions()
+                    .setLocale("en-US")
+                    .setViewportSize(TestConfig.viewportWidth(), TestConfig.viewportHeight()));
         }
     }
 
