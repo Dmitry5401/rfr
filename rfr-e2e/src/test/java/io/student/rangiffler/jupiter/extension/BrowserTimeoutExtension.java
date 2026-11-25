@@ -11,5 +11,6 @@ public final class BrowserTimeoutExtension implements BeforeEachCallback {
   public void beforeEach(ExtensionContext context) {
     BrowserContext browser = BrowserContextExtension.getOrCreateBrowserContext(context);
     browser.setDefaultTimeout(TestConfig.actionTimeout().toMillis());
+    browser.setDefaultNavigationTimeout(TestConfig.navigationTimeout().toMillis());
   }
 }
