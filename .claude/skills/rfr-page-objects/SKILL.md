@@ -17,12 +17,13 @@ description: Создаёт и меняет Page Objects и компоненты
 4. Каждый публичный метод страницы и компонента — с `@Step`, и каждый параметр попадает в текст шага: `@Step("Заполнить форму входа: {username} / {password}")`.
 5. Переход возвращает объект следующей страницы, действие и проверка на текущей — `this`.
 6. Одно бизнес-действие — один метод, имя которого называет форму: `fillLoginForm(username, password)`, `fillRegistrationForm(...)`. Без безликих `fillForm`/`fill`/`submit` и цепочек `fillUsername().fillPassword()`; отдельный метод на поле — только если тесту нужно именно поле (валидация).
-7. Действие отдельно от проверки: `fill…`/`click…` ничего не проверяют; `checkThat…` только проверяют через `PlaywrightAssertions.assertThat(locator)` и ничего не кликают. Без `locator.isVisible()` в JUnit-проверках и ручных ожиданий.
-8. Без `checkThatOpened`, `checkPageLoaded`, `isLoaded`, `waitUntilLoaded`: `click`/`fill` ждут элемент, web-first assertions ждут состояние. URL и видимость страницы проверяем, только когда переход и есть предмет теста.
-9. Локаторы: `getByRole` с точным `name`, `getByLabel`, `getByPlaceholder`, `getByText` с точным совпадением, `getByTestId`. Без `first()`/`nth()`, MUI-классов и XPath; неуникальный элемент сужай родителем: `page.getByRole(AriaRole.BANNER).getByRole(…)`.
-10. Проверка не должна быть тавтологией локатора: `assertThat(heading("Travels map")).hasText("Travels map")` ничего не доказывает. Ожидаемое значение приходит из теста (`checkThatUsername(username)`).
-11. Вход только через UI; `access_token`/`id_token` в `localStorage` не подставлять (до занятия 13).
-12. Без комментариев и Javadoc: смысл передают имена методов и текст `@Step`.
+7. Действие отдельно от проверки: `fill…`/`click…` ничего не проверяют; `checkThat…` только проверяют через `PlaywrightAssertions.assertThat(locator)` и ничего не кликают.
+8. Проверки — только web-first assertions Playwright: `PlaywrightAssertions.assertThat(locator | page | response)` (`isVisible` / `hasText` / `hasURL` и остальные методы API). Запрещены любые другие ассерты в page objects, компонентах и UI-тестах, которые этот skill покрывает: JUnit `Assertions` / `assertEquals` / `assertTrue`, AssertJ (`assertThat`, SoftAssertions), Hamcrest, `assert`, ручные `if … throw`, а также проверки по снимку состояния (`locator.isVisible()`, `textContent()`, `count()`, `page.url()`) и ручные ожидания (`waitForTimeout`, `waitForSelector`). Они не ретраят и проверяют состояние в один момент.
+9. Без `checkThatOpened`, `checkPageLoaded`, `isLoaded`, `waitUntilLoaded`: `click`/`fill` ждут элемент, web-first assertions ждут состояние. URL и видимость страницы проверяем, только когда переход и есть предмет теста.
+10. Локаторы: `getByRole` с точным `name`, `getByLabel`, `getByPlaceholder`, `getByText` с точным совпадением, `getByTestId`. Без `first()`/`nth()`, MUI-классов и XPath; неуникальный элемент сужай родителем: `page.getByRole(AriaRole.BANNER).getByRole(…)`.
+11. Проверка не должна быть тавтологией локатора: `assertThat(heading("Travels map")).hasText("Travels map")` ничего не доказывает. Ожидаемое значение приходит из теста (`checkThatUsername(username)`).
+12. Вход только через UI; `access_token`/`id_token` в `localStorage` не подставлять (до занятия 13).
+13. Без комментариев и Javadoc: смысл передают имена методов и текст `@Step`.
 
 ## Проверка результата
 
