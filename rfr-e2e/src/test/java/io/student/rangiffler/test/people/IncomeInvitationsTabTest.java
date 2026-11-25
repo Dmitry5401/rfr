@@ -7,6 +7,7 @@ import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.jupiter.extension.UserExtension;
 import io.student.rangiffler.ui.page.LandingPage;
 import io.student.rangiffler.ui.page.PeoplePage;
+import io.student.rangiffler.ui.page.PeopleTab;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,22 +20,23 @@ class IncomeInvitationsTabTest {
   @Test
   @DisplayName("Вкладка Income invitations показывает заявителя и кнопки Accept и Decline, без друга")
   void incomeTabShowsTheInviterOnly(Page page, @User(friends = 1, incomeInvitations = 1) TestUser user) {
-    TestUser friend = user.friends().getFirst();
     TestUser inviter = user.incomeInvitations().getFirst();
 
     openPeople(page, user)
-        .openIncomeInvitationsTab()
+        .openTab(PeopleTab.INCOME_INVITATIONS)
+        .table()
         .checkThatPeople(List.of(inviter.username()))
-        .checkThatUserAbsent(friend.username())
-        .checkThatAcceptAndDeclineVisible(inviter.username());
+        .row(inviter.username())
+        .checkThatActions("Accept", "Decline");
   }
 
   @Test
   @DisplayName("Пустая вкладка Income invitations сообщает, что пользователей нет")
   void incomeTabIsEmpty(Page page, @User TestUser user) {
     openPeople(page, user)
-        .openIncomeInvitationsTab()
-        .checkThatNoUsers();
+        .openTab(PeopleTab.INCOME_INVITATIONS)
+        .table()
+        .checkThatEmpty();
   }
 
   private PeoplePage openPeople(Page page, TestUser user) {

@@ -6,6 +6,8 @@ import io.student.rangiffler.jupiter.annotation.UiTest;
 import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.jupiter.extension.UserExtension;
 import io.student.rangiffler.ui.page.LandingPage;
+import io.student.rangiffler.ui.page.PeopleTab;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +24,8 @@ class PeopleFriendshipTest {
         .fillLoginForm(user.username(), user.password())
         .clickSignIn()
         .clickPeople()
-        .openFriendsTab()
-        .checkThatUsersCount(2);
+        .table()
+        .checkThatPeople(usernames(user.friends()));
   }
 
   @Test
@@ -34,8 +36,9 @@ class PeopleFriendshipTest {
         .fillLoginForm(user.username(), user.password())
         .clickSignIn()
         .clickPeople()
-        .openIncomeInvitationsTab()
-        .checkThatUsersCount(2);
+        .openTab(PeopleTab.INCOME_INVITATIONS)
+        .table()
+        .checkThatPeople(usernames(user.incomeInvitations()));
   }
 
   @Test
@@ -49,9 +52,15 @@ class PeopleFriendshipTest {
         .fillLoginForm(user.username(), user.password())
         .clickSignIn()
         .clickPeople()
-        .openAllPeopleTab()
+        .openTab(PeopleTab.ALL_PEOPLE)
         .searchPeople(stranger.username())
-        .clickAddForUser(stranger.username())
-        .checkThatUserVisible(stranger.username());
+        .table()
+        .row(stranger.username())
+        .clickAdd()
+        .checkThatWaiting();
+  }
+
+  private List<String> usernames(List<TestUser> users) {
+    return users.stream().map(TestUser::username).toList();
   }
 }

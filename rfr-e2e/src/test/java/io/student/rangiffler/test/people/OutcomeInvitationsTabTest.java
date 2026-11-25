@@ -7,6 +7,7 @@ import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.jupiter.extension.UserExtension;
 import io.student.rangiffler.ui.page.LandingPage;
 import io.student.rangiffler.ui.page.PeoplePage;
+import io.student.rangiffler.ui.page.PeopleTab;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,22 +20,24 @@ class OutcomeInvitationsTabTest {
   @Test
   @DisplayName("Вкладка Outcome invitations показывает приглашённого, Waiting... и Cancel, без друга")
   void outcomeTabShowsTheInviteeOnly(Page page, @User(friends = 1, outcomeInvitations = 1) TestUser user) {
-    TestUser friend = user.friends().getFirst();
     TestUser invitee = user.outcomeInvitations().getFirst();
 
     openPeople(page, user)
-        .openOutcomeInvitationsTab()
+        .openTab(PeopleTab.OUTCOME_INVITATIONS)
+        .table()
         .checkThatPeople(List.of(invitee.username()))
-        .checkThatUserAbsent(friend.username())
-        .checkThatWaitingAndCancelVisible(invitee.username());
+        .row(invitee.username())
+        .checkThatWaiting()
+        .checkThatActions("Cancel");
   }
 
   @Test
   @DisplayName("Пустая вкладка Outcome invitations сообщает, что пользователей нет")
   void outcomeTabIsEmpty(Page page, @User TestUser user) {
     openPeople(page, user)
-        .openOutcomeInvitationsTab()
-        .checkThatNoUsers();
+        .openTab(PeopleTab.OUTCOME_INVITATIONS)
+        .table()
+        .checkThatEmpty();
   }
 
   private PeoplePage openPeople(Page page, TestUser user) {
