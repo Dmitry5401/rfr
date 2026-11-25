@@ -8,11 +8,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Tag("ui")
+@Timeout(30)
 @UsePlaywright(BrowserOptions.class)
 @ExtendWith(BrowserTimeoutExtension.class)
 public @interface UiTest {
