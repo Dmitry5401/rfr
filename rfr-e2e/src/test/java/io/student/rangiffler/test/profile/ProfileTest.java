@@ -1,8 +1,8 @@
 package io.student.rangiffler.test.profile;
 
 import com.microsoft.playwright.Page;
-import com.microsoft.playwright.junit.UsePlaywright;
 import io.student.rangiffler.data.TestUser;
+import io.student.rangiffler.jupiter.annotation.UiTest;
 import io.student.rangiffler.jupiter.annotation.User;
 import io.student.rangiffler.jupiter.extension.UserExtension;
 import io.student.rangiffler.ui.page.LandingPage;
@@ -11,15 +11,13 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Objects;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import java.nio.file.Files;
 import java.io.IOException;
 import java.util.Base64;
 
-@Tag("ui")
-@UsePlaywright
+@UiTest
 @ExtendWith(UserExtension.class)
 @DisplayName("Профиль")
 class ProfileTest {
