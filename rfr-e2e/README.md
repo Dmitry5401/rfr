@@ -29,6 +29,7 @@ UI-тестам нужен стенд: MySQL `:3306`, `rfr-auth :9001`, `rfr-api
 | `rfr.browser` / `rfr.headless` | `chromium` / `true` |
 | `rfr.viewportWidth` / `rfr.viewportHeight` | `1920` / `1080` — viewport в `BrowserOptions` |
 | `rfr.testIdAttribute` | `data-test-id` — атрибут для `getByTestId` |
+| `rfr.actionTimeout` | `5` (секунды) — Playwright default timeout для click/fill/assert; не JUnit `@Timeout` |
 | `rfr.standCheck` | `true` — ждать стенд перед UI-тестами |
 | `rfr.standTimeout` | `180` (секунды) |
 | `rfr.migrationCheck` | `false`, задача `e2e` включает |
@@ -42,7 +43,7 @@ UI-тестам нужен стенд: MySQL `:3306`, `rfr-auth :9001`, `rfr-api
 |---|---|
 | `config` | только `TestConfig` — единственная точка чтения настроек |
 | `stand` | готовность и схема стенда: `Stand` / `Service` (`TcpService`, `HttpService`), `Migrations` |
-| `jupiter` | всё про JUnit: `annotation` (`@UiTest`, `@User` / `@StaticUser` — маркеры параметров; `@ProbeTarget`), `extension` (`BrowserOptions` — `OptionsFactory` для `@UsePlaywright`; `UserExtension` / `UsersQueueExtension` — через `@ExtendWith` на классе; через ServiceLoader: `AllureEnvironmentExtension`, затем `StandReadinessExtension`, затем `StandSchemaExtension`), `condition` (`ProbeTargetCondition`), `probe` |
+| `jupiter` | всё про JUnit: `annotation` (`@UiTest`, `@User` / `@StaticUser` — маркеры параметров; `@ProbeTarget`), `extension` (`BrowserOptions` — `OptionsFactory` для `@UsePlaywright`; `BrowserTimeoutExtension` — Playwright action timeout из `TestConfig`; `UserExtension` / `UsersQueueExtension` — через `@ExtendWith` на классе; через ServiceLoader: `AllureEnvironmentExtension`, затем `StandReadinessExtension`, затем `StandSchemaExtension`), `condition` (`ProbeTargetCondition`), `probe` |
 | `suite` | `E2eSuite` — JUnit Platform Suite (`@SelectPackages` + `@IncludeTags("ui")`); задача `e2e` выбирает этот класс |
 | `data` | тестовые данные и их владельцы: `TestUser`, `UserFixture`; `db` — `Databases`, `Jdbc` |
 | `utils` | статические утилиты без состояния: `RandomDataUtils` — случайные username/password; сюда же будущие генераторы (описания фото и т.п.) |

@@ -65,6 +65,10 @@ public final class TestConfig {
     return value("testIdAttribute", "data-test-id");
   }
 
+  public static Duration actionTimeout() {
+    return Duration.ofSeconds(Long.parseLong(value("actionTimeout", "5")));
+  }
+
   public static boolean migrationCheck() {
     return Boolean.parseBoolean(value("migrationCheck", "false"));
   }
