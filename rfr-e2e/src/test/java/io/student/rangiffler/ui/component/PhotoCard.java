@@ -51,4 +51,24 @@ public final class PhotoCard {
     assertThat(card.getByText(text, new Locator.GetByTextOptions().setExact(true))).isVisible();
     return this;
   }
+
+  @Step("Проверить, что карточка фото видна: {this.description}")
+  public PhotoCard checkThatVisible() {
+    assertThat(card).isVisible();
+    return this;
+  }
+
+  @Step("Проверить, что Photo actions видны у фото: {this.description}")
+  public PhotoCard checkThatPhotoActionsVisible() {
+    assertThat(card.getByRole(AriaRole.BUTTON,
+        new Locator.GetByRoleOptions().setName("Photo actions").setExact(true))).isVisible();
+    return this;
+  }
+
+  @Step("Проверить, что Photo actions нет у фото: {this.description}")
+  public PhotoCard checkThatPhotoActionsAbsent() {
+    assertThat(card.getByRole(AriaRole.BUTTON,
+        new Locator.GetByRoleOptions().setName("Photo actions").setExact(true))).hasCount(0);
+    return this;
+  }
 }
