@@ -105,9 +105,17 @@ tasks.register('installPlaywright', JavaExec) {
 
 tasks.register('showTrace', JavaExec) {
     group = 'verification'
-    description = 'Opens a Playwright trace.zip in Trace Viewer (pass -Ptrace=/path/to/trace.zip)'
+    description = 'Opens a Playwright trace.zip in Trace Viewer (pass -Ptrace=/path/to/trace.zip; optional -PtraceHost= -PtracePort=)'
     classpath = sourceSets.test.runtimeClasspath
     mainClass = 'com.microsoft.playwright.CLI'
     def tracePath = findProperty('trace') ?: 'trace.zip'
-    args 'show-trace', tracePath.toString()
+    def traceArgs = ['show-trace']
+    if (findProperty('traceHost')) {
+        traceArgs.addAll(['--host', findProperty('traceHost').toString()])
+    }
+    if (findProperty('tracePort')) {
+        traceArgs.addAll(['--port', findProperty('tracePort').toString()])
+    }
+    traceArgs.add(tracePath.toString())
+    args traceArgs
 }
