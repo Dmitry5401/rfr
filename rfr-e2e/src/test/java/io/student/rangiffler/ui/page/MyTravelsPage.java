@@ -98,13 +98,6 @@ public final class MyTravelsPage {
     return this;
   }
 
-  @Step("Нажать like на уровне страницы (strict mode demo)")
-  public MyTravelsPage clickLike() {
-    page.getByRole(AriaRole.BUTTON,
-        new Page.GetByRoleOptions().setName("like").setExact(true)).click();
-    return this;
-  }
-
   @Step("Открыть People")
   public PeoplePage clickPeople() {
     return header.clickPeople();
