@@ -38,7 +38,8 @@ public final class MyTravelsPage {
   }
 
   public PhotoCard photoCard(String description) {
-    return new PhotoCard(page, photoCards.filter(new Locator.FilterOptions().setHasText(description)),
+    return new PhotoCard(page, photoCards.filter(new Locator.FilterOptions()
+        .setHas(page.getByText(description, new Page.GetByTextOptions().setExact(true)))),
         description);
   }
 
