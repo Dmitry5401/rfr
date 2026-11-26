@@ -54,6 +54,18 @@ public final class MyTravelsPage {
     return this;
   }
 
+  @Step("Включить Only my travels")
+  public MyTravelsPage clickOnlyMyTravels() {
+    waitForFeed(onlyMine::click);
+    return this;
+  }
+
+  @Step("Включить With friends")
+  public MyTravelsPage clickWithFriends() {
+    waitForFeed(withFriends::click);
+    return this;
+  }
+
   @Step("Проверить число фотокарточек: {count}")
   public MyTravelsPage checkThatPhotosCount(int count) {
     assertThat(photoCards).hasCount(count);
@@ -76,9 +88,9 @@ public final class MyTravelsPage {
 
   @Step("Выбрать страну в списке посещённых: {country}")
   public MyTravelsPage selectVisitedCountry(String country) {
-    page.getByRole(AriaRole.TOOLTIP)
+    waitForFeed(() -> page.getByRole(AriaRole.TOOLTIP)
         .getByRole(AriaRole.BUTTON, new Locator.GetByRoleOptions().setName(country).setExact(true))
-        .click();
+        .click());
     return this;
   }
 
@@ -91,11 +103,21 @@ public final class MyTravelsPage {
 
   @Step("Сбросить фильтр страны: {country}")
   public MyTravelsPage resetCountryFilter(String country) {
-    page.getByLabel("Country filter: " + country, new Page.GetByLabelOptions().setExact(true))
+    waitForFeed(() -> page.getByLabel("Country filter: " + country,
+            new Page.GetByLabelOptions().setExact(true))
         .getByRole(AriaRole.BUTTON,
             new Locator.GetByRoleOptions().setName("Reset country filter").setExact(true))
-        .click();
+        .click());
     return this;
+  }
+
+  private void waitForFeed(Runnable action) {
+    page.waitForResponse(
+        response -> response.url().contains("/graphql")
+            && response.request().postData() != null
+            && response.request().postData().contains("GetFeed")
+            && response.ok(),
+        action);
   }
 
   @Step("Открыть People")
