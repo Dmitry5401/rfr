@@ -5,6 +5,7 @@ import com.microsoft.playwright.PlaywrightException;
 import com.microsoft.playwright.Tracing;
 import com.microsoft.playwright.impl.junit.BrowserContextExtension;
 import io.qameta.allure.playwright.AllurePlaywright;
+import io.student.rangiffler.config.TestConfig;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -23,6 +24,12 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  * <p>The context reference is kept in a non-{@link AutoCloseable} holder so JUnit's store
  * autoclose ({@code junit.jupiter.extensions.store.close.autocloseable.enabled=true}) does not
  * double-close the fixture-owned context.
+ *
+ * <p>Sources are off: with {@code setSources(true)} every Playwright API call also pushes a Java
+ * stack into the driver ({@code Connection} tracingCount). Under
+ * {@code parallel.mode.default=concurrent} that IPC load commonly kills the Windows driver pipe
+ * ({@code DriverException} / {@code Failed to read message from driver}). Screenshots + snapshots
+ * remain. Disable entirely with {@code -Drfr.browserTrace=false}.
  */
 public final class BrowserTraceExtension implements BeforeEachCallback, AfterEachCallback {
   private static final ExtensionContext.Namespace NAMESPACE =
@@ -33,16 +40,23 @@ public final class BrowserTraceExtension implements BeforeEachCallback, AfterEac
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
+    if (!TestConfig.browserTrace()) {
+      return;
+    }
     BrowserContext browser = BrowserContextExtension.getOrCreateBrowserContext(context);
     Path trace = Files.createTempDirectory("rfr-trace-").resolve("trace.zip");
     context.getStore(NAMESPACE).put(TRACE_PATH, trace);
     // Holder: BrowserContext is AutoCloseable; storing it raw would auto-close the fixture context.
     context.getStore(NAMESPACE).put(CONTEXT, new ContextRef(browser));
-    browser.tracing().start(new Tracing.StartOptions()
-        .setScreenshots(true)
-        .setSnapshots(true)
-        .setSources(true));
-    context.getStore(NAMESPACE).put(STARTED, Boolean.TRUE);
+    try {
+      browser.tracing().start(new Tracing.StartOptions()
+          .setScreenshots(true)
+          .setSnapshots(true)
+          .setSources(false));
+      context.getStore(NAMESPACE).put(STARTED, Boolean.TRUE);
+    } catch (PlaywrightException ignored) {
+      // Driver already dead (pipe closed) — leave STARTED unset so afterEach is a no-op.
+    }
   }
 
   @Override
@@ -67,7 +81,7 @@ public final class BrowserTraceExtension implements BeforeEachCallback, AfterEac
         ref.context.tracing().stop();
       }
     } catch (PlaywrightException ignored) {
-      // TargetClosedError / connection already dead — Playwright TestWatcher closes next.
+      // TargetClosedError / DriverException — Playwright TestWatcher closes next.
     }
   }
 
