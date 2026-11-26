@@ -73,6 +73,14 @@ public final class TestConfig {
     return Duration.ofSeconds(Long.parseLong(value("navigationTimeout", "30")));
   }
 
+  /**
+   * When false, {@code BrowserTraceExtension} skips {@code tracing().start/stop}.
+   * Use {@code -Drfr.browserTrace=false} to isolate Windows driver pipe crashes under load.
+   */
+  public static boolean browserTrace() {
+    return Boolean.parseBoolean(value("browserTrace", "true"));
+  }
+
   public static boolean migrationCheck() {
     return Boolean.parseBoolean(value("migrationCheck", "false"));
   }
