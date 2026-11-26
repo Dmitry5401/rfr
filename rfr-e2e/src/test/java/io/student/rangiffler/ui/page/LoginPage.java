@@ -31,9 +31,9 @@ public final class LoginPage {
   }
 
   @Step("Нажать Sign in")
-  public MainPage clickSignIn() {
+  public MyTravelsPage clickSignIn() {
     signIn.click();
-    return new MainPage(page);
+    return new MyTravelsPage(page);
   }
 
   @Step("Нажать Sign in с неверными данными")
