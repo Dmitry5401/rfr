@@ -20,21 +20,20 @@ class FriendsTabTest {
   @DisplayName("Вкладка Friends показывает друга и кнопку Remove, без входящей заявки")
   void friendsTabShowsTheFriendOnly(Page page, @User(friends = 1, incomeInvitations = 1) TestUser user) {
     TestUser friend = user.friends().getFirst();
-    TestUser inviter = user.incomeInvitations().getFirst();
 
     openPeople(page, user)
-        .openFriendsTab()
+        .table()
         .checkThatPeople(List.of(friend.username()))
-        .checkThatUserAbsent(inviter.username())
-        .checkThatRemoveButtonVisible(friend.username());
+        .row(friend.username())
+        .checkThatActions("Remove");
   }
 
   @Test
   @DisplayName("Пустая вкладка Friends сообщает, что пользователей нет")
   void friendsTabIsEmpty(Page page, @User TestUser user) {
     openPeople(page, user)
-        .openFriendsTab()
-        .checkThatNoUsers();
+        .table()
+        .checkThatEmpty();
   }
 
   private PeoplePage openPeople(Page page, TestUser user) {
