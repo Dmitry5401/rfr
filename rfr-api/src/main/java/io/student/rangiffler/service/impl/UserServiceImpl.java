@@ -50,12 +50,10 @@ public class UserServiceImpl implements UserService {
   public User createNewUserIfNotPresent(String username) {
     UserEntity userEntity = userRepository.findByUsername(username)
         .orElseGet(() -> {
-          UserEntity newUser = new UserEntity();
-          newUser.setUsername(username);
-          newUser.setCountry(countryRepository.findByCode("ru").orElseThrow(() -> new ResourceNotFoundException(
+          CountryEntity country = countryRepository.findByCode("ru").orElseThrow(() -> new ResourceNotFoundException(
               "Country not found by code: ru"
-          )));
-          return userRepository.save(newUser);
+          ));
+          return userRepository.save(UserEntity.create(username, country));
         });
     return toUser(userEntity, null);
   }
@@ -111,22 +109,14 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public User updateUser(String username, UserInput input) {
     UserEntity userEntity = getRequiredUser(username);
-
-    if (input.getFirstname() != null) {
-      userEntity.setFirstname(input.getFirstname());
-    }
-    if (input.getSurname() != null) {
-      userEntity.setLastName(input.getSurname());
-    }
-    if (input.getAvatar() != null) {
-      userEntity.setAvatar(new StringAsBytes(input.getAvatar()).bytes());
-    }
+    CountryEntity country = null;
     if (input.getLocation() != null) {
-      CountryEntity country = countryRepository.findByCode(input.getLocation().getCode())
+      country = countryRepository.findByCode(input.getLocation().getCode())
           .orElseThrow(() -> new ResourceNotFoundException(
               String.format("Country not found by code: %s", input.getLocation().getCode())));
-      userEntity.setCountry(country);
     }
+    byte[] avatar = input.getAvatar() == null ? null : new StringAsBytes(input.getAvatar()).bytes();
+    userEntity.updateProfile(input.getFirstname(), input.getSurname(), avatar, country);
 
     UserEntity saved = userRepository.save(userEntity);
     return toUser(saved, null);
